@@ -43,7 +43,7 @@
             Rectangle:
                 size: self.size
         Image:
-            source: 'imgs/Refinaria.png'
+            source: 'imgs/Supervisorio.png'
 
         Label:
             id: lb_temp
@@ -70,59 +70,17 @@
             background_normal : 'imgs/graph_icon.jpg'
             background_down : 'imgs/graph_icon.jpg'
             pos_hint: {'x': 0.002, 'y':0.22}
-            on_release: root._graph['co_temp_t'].open()
+            on_release: root._graph['co_fit03'].open()
         
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_temp_t'].open()
-
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_temp_t'].open()
-
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_temp_t'].open()
-
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_temp_t'].open()
-
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_temp_t'].open()
-
-
+        Button:
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            size: (0.65*62,0.65*58)
+            # on_enter : root.on_enter_button()
+            background_normal : 'imgs/graph_icon.jpg'
+            background_down : 'imgs/graph_icon.jpg'
+            pos_hint: {'x': 0.002, 'y':0.22}
+            on_release: root._graph['co_pressostato'].open()
 
         Label:
             id: fornalha

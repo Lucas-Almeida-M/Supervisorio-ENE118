@@ -18,7 +18,7 @@ class MainWidget (BoxLayout):
     _updateWidgets = True
     _tags = {}
     _max_points = 20
-    _tags_with_graphs = ['co_temp_t','co_temp_carc','co_pressao','co_fit02','co_thd_tensao_rn','co_frequencia']
+    _tags_with_graphs = ['co_pressostato','co_fit03']
 
     def __init__(self, **kwargs):
         """
@@ -124,7 +124,6 @@ class MainWidget (BoxLayout):
 
         # #Atualizar nivel do termometro 
         # self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
-        self._meas['values']['co_temp_t'] = random.random() * 200  
         #Atualizacao do grafico
         self.updateGraphs()
 
