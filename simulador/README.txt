@@ -12,3 +12,6 @@ Para executar o simulador a partir do codigo fonte, siga os seguintes passos:
 	
 4) Execute o servidor:
 	python main.py
+
+
+	.\env\Scripts\Activate.bat

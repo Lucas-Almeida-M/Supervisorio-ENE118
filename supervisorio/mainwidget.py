@@ -18,6 +18,7 @@ class MainWidget (BoxLayout):
     _updateWidgets = True
     _tags = {}
     _max_points = 20
+    _tags_with_graphs = ['co_temp_t','co_temp_carc','co_pressao','co_fit02','co_thd_tensao_rn','co_frequencia']
 
     def __init__(self, **kwargs):
         """
@@ -27,19 +28,31 @@ class MainWidget (BoxLayout):
         self._scan_time = kwargs.get('scan_time')
         self._serverIP = kwargs.get('server_ip')
         self._serverPort = kwargs.get('server_port')
+        self._modbusCLP = kwargs.get('modbus_CLP')
         self._modbusPopup = ModbusPopup(self._serverIP, self._serverPort)
         self._scanPopup = ScanPopup(scantime = self._scan_time)
         self._modbusClient = ModbusClient(host = self._serverIP, port = self._serverPort)
         self._meas = {}
         self._meas ['timestamp'] = None
         self._meas ['values'] = {}
-        for key,value in kwargs.get('modbus_addrs').items():
-            if key == 'fornalha':
-                plot_color = (1,0,0,1)
-            else:
-                plot_color = (random.random(),random.random(),random.random(),1)
-            self._tags[key] = {'addr' : value, 'color' : plot_color}
-        self._graph = DataGraphPopup(self._max_points, self._tags['fornalha']['color'])
+
+        for item in self._modbusCLP:
+            tag = item.pop('tag')
+            self._tags[tag] = item
+            plot_color = (random.random(),random.random(),random.random(),1)
+            self._tags[tag]['color'] = plot_color
+        
+        self._graph = {}
+        for i in range (len (self._tags_with_graphs)):
+            self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color']))
+
+        # for key,value in kwargs.get('modbus_CLP').items():
+        #     if key == 'fornalha':
+        #         plot_color = (1,0,0,1)
+        #     else:
+        #         plot_color = (random.random(),random.random(),random.random(),1)
+        #     self._tags[key] = {'addr' : value, 'color' : plot_color}
+        # self._graph = DataGraphPopup(self._max_points, self._tags['fornalha']['color'])
 
         
 
@@ -91,7 +104,14 @@ class MainWidget (BoxLayout):
         '''
         self._meas ['timestamp'] = datetime.now()
         for key, value in self._tags.items():
-            self._meas['values'][key] = self._modbusClient.read_holding_registers(value['addr'],1)[0]
+            if value['bit'] != None:
+                self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] & (1 << value['bit'])
+            else:
+                self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
+    
+    def updateGraphs(self):
+        for tag in self._tags_with_graphs:
+            self._graph[tag].ids.graph.updateGraph((self._meas['timestamp'], self._meas['values'][tag]),0)
         
     def updateGUI(self):
         """
@@ -99,14 +119,17 @@ class MainWidget (BoxLayout):
         """
 
         #atualizacao dos labels das temperaturas
-        for key,value in self._tags.items():
-            self.ids[key].text = str(self._meas['values'][key]) + ' C'
+        # for key,value in self._tags.items():
+        #     self.ids[key].text = str(self._meas['values'][key]) + ' C'
 
-        #Atualizar nivel do termometro 
-        self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
-
+        # #Atualizar nivel do termometro 
+        # self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
+        self._meas['values']['co_temp_t'] = random.random() * 200  
         #Atualizacao do grafico
-        self._graph.ids.graph.updateGraph((self._meas['timestamp'], self._meas['values']['fornalha']),0)
+        self.updateGraphs()
+
+    def on_enter_button(self, instance):
+        Window.set_system_cursor('hand')
 
     def stopRefresh(self):
         self._updateWidgets = False
