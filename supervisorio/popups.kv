@@ -1,0 +1,82 @@
+#:kivy 1.11.1
+
+<ModbusPopup>:
+    title: "configurações MODBUS"
+    size_hint_y: None
+    size_hint_x: 0.4
+    height: 200
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        GridLayout:
+            coils: 2
+            rows: 2
+            Label:
+                text: "IP"
+                fonte_size: 14
+            TextInput:
+                id: txt_ip
+                text: "127.0.0.1"
+                fonte_size: 14
+                halign: 'center'
+                valign: 'center'
+            Label:
+                text: "Porta"
+                fonte_size: 14
+            TextInput:
+                id: txt_porta
+                text: "502"
+                fonte_size: 14
+                halign: 'center'
+                valign: 'center'
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Conectar'
+                on_release:
+                    root.clearInfo()
+                    app.root.startDataRead(txt_ip.text, int(txt_porta.text))
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Fechar'
+                on_release:
+                    root.dismiss()
+                    root.clearInfo()
+
+
+<ScanPopup>:
+    title: "configurações Scantime"
+    size_hint_y: None
+    size_hint_x: 0.4
+    height: 150
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        GridLayout:
+            coils: 2
+            rows: 1
+            Label:
+                text: "ScanTime [ms]"
+                fonte_size: 14
+            TextInput:
+                id: txt_st
+                fonte_size: 14
+                halign: 'center'
+                valign: 'center'
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Configurar'
+                on_release:
+                    app.root._scan_time = int(txt_st.text)
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Fechar'
+                on_release:
+                    root.dismiss()
