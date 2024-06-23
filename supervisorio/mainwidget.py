@@ -10,6 +10,7 @@ from timeseriesgraph import TimeSeriesGraph
 
 
 
+
 class MainWidget (BoxLayout):
     """
     Widget principal da aplicação

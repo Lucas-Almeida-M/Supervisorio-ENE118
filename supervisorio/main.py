@@ -1,12 +1,16 @@
 from kivy.app import App 
 from mainwidget import MainWidget
 from kivy.lang.builder import Builder
+from kivy.config import Config
+from kivy.core.window import Window
+from kivy.uix.widget import Widget
+from kivy.properties import NumericProperty
 
 
 class MainApp(App):
 
     def build(self):
-
+       
         self._widget = MainWidget(scan_time = 1000, server_ip = '127.0.0.1', server_port = 502,
         modbus_CLP = 
         [
@@ -94,6 +98,7 @@ class MainApp(App):
             {'tipo': 'FP', 'address': 1420, 'bit': None, 'tag': 'co_torque', 'div': 1}                   
         ]
         )
+        Window.size = (1150, 712)
         return self._widget
     
     def on_stop(self):

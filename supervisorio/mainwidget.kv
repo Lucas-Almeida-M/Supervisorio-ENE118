@@ -42,25 +42,180 @@
                 rgb: 1,1,1
             Rectangle:
                 size: self.size
+            
+        canvas:
+            Color:
+                rgba: 0, 1, 0, 1
+
+            Rectangle:
+                # size_hint: (None, None)
+                size: 200, 100
+                pos: 100, 100
         Image:
             source: 'imgs/Supervisorio.png'
 
-        Label:
-            id: lb_temp
-            size_hint: (None, None)
-            size: (termometro.size[0]*0.25, termometro.size[1])
-            pos_hint: {'x': -0.06, 'y':0.3}
+        # Label:
+        #     id: lb_temp
+        #     size_hint: (None, None)
+        #     size: (termometro.size[0]*0.25, termometro.size[1])
+        #     pos_hint: {'x': -0.06, 'y':0.3}
+        #     canvas:
+        #         Color: 
+        #             rgb: 1,0,0
+        #         Rectangle:
+        #             size: self.size
+        #             pos: (self.pos[0] + self.width*1.5, self.pos[1])
+        # Image:
+        #     id: termometro
+        #     source: 'imgs/termometro.png'
+        #     size_hint: 0.17, 0.17
+        #     pos_hint: lb_temp.pos_hint
+        # Button:
+        #     size_hint : (None, None)
+        #     color : (1,1,1,1)
+        #     size: (0.65*80,0.65*58)
+        #     # on_enter : root.on_enter_button()
+        #     background_normal : 'imgs/graph_icon.jpg'
+        #     background_down : 'imgs/graph_icon.jpg'
+        #     pos_hint: {'x': 0.022, 'y':0.22}
+        #     on_release: root._graph['co_fit03'].open()
+
+        Button:
+            id:lbt0
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'GRAFICO'
+            size: (120,40)
+            pos_hint: {'x': 0.002, 'y':0.16}
+        Button:
+            id:lbt1
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'COMANDO'
+            size: (120,40)
+            pos_hint: {'x': 0.1, 'y':0.16}
+        Button:
+            id:lbt2
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'MEDICOES'
+            size: (120,40)
+            pos_hint: {'x': 0.002, 'y':0.1}
+        Button:
+            id:lbt3
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'TEMP'
+            size: (120,40)
+            pos_hint: {'x': 0.1, 'y':0.1}
+        Button:
+            id:lbt4
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'BD'
+            size: (120,40)
+            pos_hint: {'x': 0.002, 'y':0.04}
+        Button:
+            id:lbt5
+            size_hint : (None, None)
+            color : (1,1,1,1)
+            text: 'PID'
+            size: (120,40)
+            pos_hint: {'x': 0.1, 'y':0.04}
+        
+        Button:
+            id:lbt6
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0  
+            color: 0, 0, 0, 1
+            text: 'Pressao'
+            size: (120,40)
+            pos_hint: {'x': 0.864, 'y':0.55}
+            on_release: root._graph['co_fit03'].open()
+        
+        Button:
+            id:lbt7
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0  
+            color: 0, 0, 0, 1  
+            text: 'Fluxo'
+            size: (120,40)
+            pos_hint: {'x': 0.432, 'y':0.81}
+            on_release: root._graph['co_fit03'].open()
+
+        FloatLayout:
+            size_hint: None, None
+            size: 21, 21
+            pos_hint: {'x': 0.7415, 'y':0.799}
             canvas:
-                Color: 
-                    rgb: 1,0,0
+                Color:
+                    rgba: 0, 1, 0, 1  
                 Rectangle:
+                    pos: self.pos
                     size: self.size
-                    pos: (self.pos[0] + self.width*1.5, self.pos[1])
-        Image:
-            id: termometro
-            source: 'imgs/termometro.png'
-            size_hint: 0.17, 0.17
-            pos_hint: lb_temp.pos_hint
+        FloatLayout:
+            size_hint: None, None
+            size: 21, 21
+            pos_hint: {'x': 0.7415, 'y':0.699}
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        FloatLayout:
+            size_hint: None, None
+            size: 21, 21
+            pos_hint: {'x': 0.7415, 'y':0.599}
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        FloatLayout:
+            size_hint: None, None
+            size: 21, 21
+            pos_hint: {'x': 0.7415, 'y':0.489}
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        FloatLayout:
+            size_hint: None, None
+            size: 21, 21
+            pos_hint: {'x': 0.7415, 'y':0.384}
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+          
+        Label:
+            id: label_torque
+            size_hint : (None, None)
+            text: 'label torque'
+            font_size: 16
+            bold: True
+            halign: 'center'
+            pos_hint: {'x': 0.27, 'y':0.52}
+            color: 1,1,1,1
+            
+        Label:
+            id: label_velocidade
+            size_hint : (None, None)
+            text: 'label velocidade'
+            font_size: 16
+            background_color : (0.5,0.5,0.5,0.5)
+            bold: True
+            halign: 'center'
+            pos_hint: {'x': 0.27, 'y':0.48}
+            color: 1,1,1,1
 
         Button:
             size_hint : (None, None)
@@ -82,39 +237,6 @@
             pos_hint: {'x': 0.002, 'y':0.22}
             on_release: root._graph['co_pressostato'].open()
 
-        Label:
-            id: fornalha
-            text: '-.- C'
-            font_size: 25
-            bold: True
-            halign: 'center'
-            pos_hint: {'x': -0.45, 'y':0.01}
-            color: 0,0,0,1
-
-        TempLabel: 
-            id: gas_ref
-            pos_hint: {'x': 0.175, 'y':0.28}
-        TempLabel: 
-            id: gasolina
-            pos_hint: {'x': 0.175, 'y':0.205}
-        TempLabel: 
-            id: nafta
-            pos_hint: {'x': 0.175, 'y':0.13}
-        TempLabel: 
-            id: querosene
-            pos_hint: {'x': 0.175, 'y':0.055}
-        TempLabel: 
-            id: diesel
-            pos_hint: {'x': 0.175, 'y':-0.02}
-        TempLabel: 
-            id: oleo_lub
-            pos_hint: {'x': 0.175, 'y':-0.095}
-        TempLabel: 
-            id: oleo_comb
-            pos_hint: {'x': 0.175, 'y':-0.17}
-        TempLabel: 
-            id: residuos
-            pos_hint: {'x': 0.175, 'y':-0.245}
 
 
 <TempLabel@Label>
@@ -123,3 +245,4 @@
     bold: True
     halign: 'center'  
     color: 0,0,0,1
+
