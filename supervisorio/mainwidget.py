@@ -1,11 +1,12 @@
 from kivy.uix.boxlayout import BoxLayout
-from popups import ModbusPopup, ScanPopup
+from popups import ModbusPopup, ScanPopup, DataGraphPopup
 from pyModbusTCP.client import ModbusClient
 from kivy.core.window import Window
 from threading import Thread
 from time import sleep
 from datetime import datetime
 import random
+from timeseriesgraph import TimeSeriesGraph
 
 
 
@@ -16,6 +17,7 @@ class MainWidget (BoxLayout):
     _updateThread = None
     _updateWidgets = True
     _tags = {}
+    _max_points = 20
 
     def __init__(self, **kwargs):
         """
@@ -37,6 +39,7 @@ class MainWidget (BoxLayout):
             else:
                 plot_color = (random.random(),random.random(),random.random(),1)
             self._tags[key] = {'addr' : value, 'color' : plot_color}
+        self._graph = DataGraphPopup(self._max_points, self._tags['fornalha']['color'])
 
         
 
@@ -98,8 +101,15 @@ class MainWidget (BoxLayout):
         #atualizacao dos labels das temperaturas
         for key,value in self._tags.items():
             self.ids[key].text = str(self._meas['values'][key]) + ' C'
+
         #Atualizar nivel do termometro 
         self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
+
+        #Atualizacao do grafico
+        self._graph.ids.graph.updateGraph((self._meas['timestamp'], self._meas['values']['fornalha']),0)
+
+    def stopRefresh(self):
+        self._updateWidgets = False
 
 
 

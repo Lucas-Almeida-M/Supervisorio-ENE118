@@ -18,11 +18,16 @@ class MainApp(App):
             'oleo_lub' : 1006,
             'oleo_comb' : 1007,
             'residuos' : 1008
-        }
-                                  
-                                  
+        }                            
         )
         return self._widget
+    
+    def on_stop(self):
+        '''
+        Metodo executado quando a aplicacao e fechada
+        '''
+        self._widget.stopRefresh()
+        
     
 
 if __name__ == '__main__':
