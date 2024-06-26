@@ -94,6 +94,8 @@
             text: 'COMANDO'
             size: (120,40)
             pos_hint: {'x': 0.1, 'y':0.16}
+            on_release: root._ControlePopup.open()
+
         Button:
             id:lbt2
             size_hint : (None, None)
@@ -143,57 +145,114 @@
             pos_hint: {'x': 0.432, 'y':0.81}
             on_release: root._graph['co_fit03'].open()
 
-        FloatLayout:
-            size_hint: None, None
+
+
+
+        # FloatLayout:
+        #     size_hint: None, None
+        #     size: 21, 21
+        #     pos_hint: {'x': 0.7415, 'y':0.799}
+        #     canvas:
+        #         Color:
+        #             rgba: 0, 1, 0, 1  
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+        Button:
+            id:lbt8
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0  
+            color: 0, 0, 0, 0  
+            text: ''
             size: 21, 21
             pos_hint: {'x': 0.7415, 'y':0.799}
-            canvas:
-                Color:
-                    rgba: 0, 1, 0, 1  
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-        FloatLayout:
-            size_hint: None, None
+            on_release: app.root.toggleBitValue('co_xv2')
+
+    
+        # FloatLayout:
+        #     size_hint: None, None
+        #     size: 21, 21
+        #     pos_hint: {'x': 0.7415, 'y':0.699}
+        #     canvas:
+        #         Color:
+        #             rgba: 0, 1, 0, 1  
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+
+        Button:
+            id:lbt9
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0  
+            color: 0, 0, 0, 1  
+            text: ''
             size: 21, 21
             pos_hint: {'x': 0.7415, 'y':0.699}
-            canvas:
-                Color:
-                    rgba: 0, 1, 0, 1  
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-        FloatLayout:
-            size_hint: None, None
+            on_release: app.root.toggleBitValue('co_xv3')
+
+        # FloatLayout:
+        #     size_hint: None, None
+        #     size: 21, 21
+        #     pos_hint: {'x': 0.7415, 'y':0.599}
+        #     canvas:
+        #         Color:
+        #             rgba: 0, 1, 0, 1  
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+
+        Button:
+            id:lbt10
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0 
+            color: 0, 0, 0, 1  
+            text: ''
             size: 21, 21
             pos_hint: {'x': 0.7415, 'y':0.599}
-            canvas:
-                Color:
-                    rgba: 0, 1, 0, 1  
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-        FloatLayout:
-            size_hint: None, None
+            on_release: app.root.toggleBitValue('co_xv4')
+
+        
+        # FloatLayout:
+        #     size_hint: None, None
+        #     size: 21, 21
+        #     pos_hint: {'x': 0.7415, 'y':0.489}
+        #     canvas:
+        #         Color:
+        #             rgba: 0, 1, 0, 1  
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+
+        Button:
+            id:lbt11
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0  
+            color: 0, 0, 0, 1  
+            text: ''
             size: 21, 21
             pos_hint: {'x': 0.7415, 'y':0.489}
-            canvas:
-                Color:
-                    rgba: 0, 1, 0, 1  
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            on_release: app.root.toggleBitValue('co_xv5')
 
-        FloatLayout:
-            size_hint: None, None
+        # FloatLayout:
+        #     size_hint: None, None
+        #     size: 21, 21
+        #     pos_hint: {'x': 0.7415, 'y':0.384}
+        #     canvas:
+        #         Color:
+        #             rgba: 0, 1, 0, 1  
+        #         Rectangle:
+        #             pos: self.pos
+                    # size: self.size
+
+        Button:
+            id:lbt12
+            size_hint : (None, None)
+            background_color: 0, 0, 0, 0 
+            color: 0, 0, 0, 1  
+            text: ''
             size: 21, 21
             pos_hint: {'x': 0.7415, 'y':0.384}
-            canvas:
-                Color:
-                    rgba: 0, 1, 0, 1  
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            on_release: app.root.toggleBitValue('co_xv6')
 
           
         Label:

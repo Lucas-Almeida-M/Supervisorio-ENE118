@@ -139,4 +139,43 @@
         on_active: app.root._graph['co_temp_t'].ids.graph.setMaxPoints(int (label.text),0) if app.root is not None else None
     Label:
         id: label
-        
+
+<ControlePopup>:
+    title: "Controle do sistema"
+    size_hint_y: None
+    size_hint_x: 0.4
+    height: 150
+    BoxLayout:
+        id: layout
+        orientation: 'horizontal'
+        BoxLayout:
+            id: CompressorCommand
+            orientation: 'vertical'
+            Label:
+                text: "Comando do Compressor"
+                fonte_size: 14
+            Button:
+                text: 'Ligar'
+                on_release: 
+            Button:
+                text: 'Desligar'
+            Button:
+                text: 'Reset'
+        BoxLayout:
+            id: layout
+            orientation: 'vertical'
+            Label:
+                text: "Tipo de partida"
+                fonte_size: 14
+            Button:
+                id: btsoft
+                text: 'ATS48 Soft-start'
+                on_release: app.root.acionamentoMotor(1)
+            Button:
+                id: btinv
+                text: 'ATV31 Inversor'
+                on_release: app.root.acionamentoMotor(2)
+            Button:
+                id: btdir
+                text: 'Tesys Direta'
+                on_release: app.root.acionamentoMotor(3)

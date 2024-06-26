@@ -29,7 +29,9 @@ class ModbusPopup(Popup):
         
     
 
-
+class ControlePopup(Popup):
+    
+    pass
 
 
 
