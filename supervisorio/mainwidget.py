@@ -47,7 +47,7 @@ class MainWidget (BoxLayout):
         
         self._graph = {}
         for i in range (len (self._tags_with_graphs)):
-            self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color']))
+            self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color'], self._tags_with_graphs[i]))
             if self._tags_with_graphs[i] == 'co_pressostato':
                 self._graph[self._tags_with_graphs[i]].title = 'Presao'
             if self._tags_with_graphs[i] == 'co_fit03':
@@ -116,6 +116,8 @@ class MainWidget (BoxLayout):
                 self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'],1)[0] & (1 << value['bit'])) >> value['bit'])
             else:
                 self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
+        # self._meas['values']['co_pressostato'] = int(random.random() * 100) 
+        # self._meas['values']['co_fit03'] = int (random.random() * 100) 
         
     
     def writeData(self, tag, value):
@@ -208,6 +210,11 @@ class MainWidget (BoxLayout):
                             self._ControlePopup.ids.btsoft.background_color = (0.5,0.5,0.5,1)
                             self._ControlePopup.ids.btinv.background_color = (0.5,0.5,0.5,1)
                             self._ControlePopup.ids.btdir.background_color = (0,1,0,1)
+
+                case 'co_pressostato':
+                    self.ids.lbt6.text = str(self._meas['values']['co_pressostato'])
+                case 'co_fit03':
+                    self.ids.lbt7.text = str(self._meas['values']['co_fit03'])
 
     def modoPartidaMotor(self, val):
         self.writeData('co_sel_driver', val)

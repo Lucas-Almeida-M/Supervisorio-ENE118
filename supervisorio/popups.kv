@@ -87,7 +87,7 @@
         TimeSeriesGraph:
             id: graph
             xlabel: 'Horario'
-            ylabel: 'temperatura'
+            ylabel: 'Pressao'
             background_color : 0.5,0.5,0.5,0.5
             x_ticks_minor: 1
             x_ticks_major: 5
@@ -136,7 +136,7 @@
     size_hint: (0.1,1)
     CheckBox:
         id:checkbox
-        on_active: app.root._graph['co_temp_t'].ids.graph.setMaxPoints(int (label.text),0) if app.root is not None else None
+        on_active: app.root._graph['co_pressostato'].ids.graph.setMaxPoints(int (label.text),0) if app.root is not None else None
     Label:
         id: label
 

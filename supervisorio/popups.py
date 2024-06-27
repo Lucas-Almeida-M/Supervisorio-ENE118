@@ -50,7 +50,7 @@ class ScanPopup(Popup):
 
 class DataGraphPopup(Popup):
 
-    def __init__(self, xmax, plot_color, **kwargs):
+    def __init__(self, xmax, plot_color, tag, **kwargs):
         super().__init__(**kwargs)
         self.plot = LinePlot(line_width = 1.5, color = plot_color)
         self.ids.graph.add_plot(self.plot)
