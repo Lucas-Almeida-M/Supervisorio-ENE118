@@ -133,7 +133,7 @@
             text: 'Pressao'
             size: (120,40)
             pos_hint: {'x': 0.864, 'y':0.55}
-            on_release: root._graph['co_fit03'].open()
+            on_release: root._graph['co_pressostato'].open()
         
         Button:
             id:lbt7
@@ -275,26 +275,6 @@
             halign: 'center'
             pos_hint: {'x': 0.27, 'y':0.48}
             color: 1,1,1,1
-
-        Button:
-            size_hint : (None, None)
-            color : (1,1,1,1)
-            size: (0.65*62,0.65*58)
-            # on_enter : root.on_enter_button()
-            background_normal : 'imgs/graph_icon.jpg'
-            background_down : 'imgs/graph_icon.jpg'
-            pos_hint: {'x': 0.002, 'y':0.22}
-            on_release: root._graph['co_fit03'].open()
-        
-        Button:
-            size_hint : (None, None)
-            color : (1,1,1,1)
-            size: (0.65*62,0.65*58)
-            # on_enter : root.on_enter_button()
-            background_normal : 'imgs/graph_icon.jpg'
-            background_down : 'imgs/graph_icon.jpg'
-            pos_hint: {'x': 0.002, 'y':0.22}
-            on_release: root._graph['co_pressostato'].open()
 
 
 

@@ -48,6 +48,11 @@ class MainWidget (BoxLayout):
         self._graph = {}
         for i in range (len (self._tags_with_graphs)):
             self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color']))
+            if self._tags_with_graphs[i] == 'co_pressostato':
+                self._graph[self._tags_with_graphs[i]].title = 'Presao'
+            if self._tags_with_graphs[i] == 'co_fit03':
+                self._graph[self._tags_with_graphs[i]].title = 'fluxo'
+
 
         # for key,value in kwargs.get('modbus_CLP').items():
         #     if key == 'fornalha':
@@ -204,8 +209,26 @@ class MainWidget (BoxLayout):
                             self._ControlePopup.ids.btinv.background_color = (0.5,0.5,0.5,1)
                             self._ControlePopup.ids.btdir.background_color = (0,1,0,1)
 
-    def acionamentoMotor(self, num):
-        self.writeData('co_sel_driver', num)
+    def modoPartidaMotor(self, val):
+        self.writeData('co_sel_driver', val)
+    
+    def acionamentoMotor(self, val):
+
+        match self._meas['values']['co_sel_driver']:
+            case 1:
+                self.writeData('co_ats48', val)
+                self.writeData('co_atv31', 0)
+                self.writeData('co_tesys', 0)
+            case 2:
+                self.writeData('co_ats48', 0)
+                self.writeData('co_atv31', val)
+                self.writeData('co_tesys', 0)
+            case 3:
+                self.writeData('co_ats48', 0)
+                self.writeData('co_atv31', 0)
+                self.writeData('co_tesys', val)
+
+        pass
 
     def on_enter_button(self, instance):
         Window.set_system_cursor('hand')
