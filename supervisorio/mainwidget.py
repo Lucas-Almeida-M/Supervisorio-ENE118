@@ -1,5 +1,5 @@
 from kivy.uix.boxlayout import BoxLayout
-from popups import ModbusPopup, ScanPopup, DataGraphPopup, ControlePopup
+from popups import ModbusPopup, ScanPopup, DataGraphPopup
 from pyModbusTCP.client import ModbusClient
 from kivy.core.window import Window
 from threading import Thread
@@ -20,7 +20,7 @@ class MainWidget (BoxLayout):
     _updateWidgets = True
     _tags = {}
     _max_points = 20
-    _tags_with_graphs = ['co_pressostato','co_fit03']
+    _tags_with_graphs = ['co_pressao','co_fit03']
 
     def __init__(self, **kwargs):
         """
@@ -30,7 +30,7 @@ class MainWidget (BoxLayout):
         self._scan_time = kwargs.get('scan_time')
         self._serverIP = kwargs.get('server_ip')
         self._serverPort = kwargs.get('server_port')
-        self._ControlePopup = ControlePopup()
+        # self._ControlePopup = ControlePopup()
         self._modbusCLP = kwargs.get('modbus_CLP')
         self._modbusPopup = ModbusPopup(self._serverIP, self._serverPort)
         self._scanPopup = ScanPopup(scantime = self._scan_time)
@@ -48,8 +48,8 @@ class MainWidget (BoxLayout):
         self._graph = {}
         for i in range (len (self._tags_with_graphs)):
             self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color'], self._tags_with_graphs[i]))
-            if self._tags_with_graphs[i] == 'co_pressostato':
-                self._graph[self._tags_with_graphs[i]].title = 'Presao'
+            if self._tags_with_graphs[i] == 'co_pressao':
+                self._graph[self._tags_with_graphs[i]].title = 'Pressão'
             if self._tags_with_graphs[i] == 'co_fit03':
                 self._graph[self._tags_with_graphs[i]].title = 'fluxo'
 
@@ -169,72 +169,92 @@ class MainWidget (BoxLayout):
     def updateVisualElements(self):
         for key, value in self._tags.items():
             match key:
+                #atualiza os ícones das cargas/válvulas
                 case 'co_xv2':
                     if self._meas['values'][key]:  
-                        self.ids.lbt8.background_color = (1,0,0,1) 
+                        self.ids.bt_xv2.background_normal = 'imgs/ClosedValve.png'
                     else: 
-                        self.ids.lbt8.background_color = (0,1,0,1)
+                        self.ids.bt_xv2.background_normal = 'imgs/OpenValve.png'
                 case 'co_xv3':
                     if self._meas['values'][key]:  
-                        self.ids.lbt9.background_color = (1,0,0,1) 
+                        self.ids.bt_xv3.background_normal = 'imgs/ClosedValve.png'
                     else: 
-                        self.ids.lbt9.background_color = (0,1,0,1)
+                        self.ids.bt_xv3.background_normal = 'imgs/OpenValve.png'
                 case 'co_xv4':
                     if self._meas['values'][key]:  
-                        self.ids.lbt10.background_color = (1,0,0,1) 
+                        self.ids.bt_xv4.background_normal = 'imgs/ClosedValve.png'
                     else: 
-                        self.ids.lbt10.background_color = (0,1,0,1)
+                        self.ids.bt_xv4.background_normal = 'imgs/OpenValve.png'
                 case 'co_xv5':
                     if self._meas['values'][key]:  
-                        self.ids.lbt11.background_color = (1,0,0,1) 
+                        self.ids.bt_xv5.background_normal = 'imgs/ClosedValve.png'
                     else: 
-                        self.ids.lbt11.background_color = (0,1,0,1)
+                        self.ids.bt_xv5.background_normal = 'imgs/OpenValve.png'
                 case 'co_xv6':
                     if self._meas['values'][key]:  
-                        self.ids.lbt12.background_color = (1,0,0,1) 
+                        self.ids.bt_xv6.background_normal = 'imgs/ClosedValve.png'
                     else: 
-                        self.ids.lbt12.background_color = (0,1,0,1)
+                        self.ids.bt_xv6.background_normal = 'imgs/OpenValve.png'
+
                 case 'co_sel_driver':
                 
                     match self._meas['values'][key]:
                         
                         case 1:
-                            self._ControlePopup.ids.btsoft.background_color = (0,1,0,1)
-                            self._ControlePopup.ids.btinv.background_color = (0.5,0.5,0.5,1)
-                            self._ControlePopup.ids.btdir.background_color = (0.5,0.5,0.5,1)
+                            self.ids.bt_soft.background_color = (53.0*1/255,63.0*1/255,80.0*1/255,1)
+                            self.ids.bt_inversor.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+                            self.ids.bt_direta.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
                         case 2:
-                            self._ControlePopup.ids.btsoft.background_color = (0.5,0.5,0.5,1)
-                            self._ControlePopup.ids.btinv.background_color = (0,1,0,1)
-                            self._ControlePopup.ids.btdir.background_color = (0.5,0.5,0.5,1)
+                            self.ids.bt_soft.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+                            self.ids.bt_inversor.background_color = (53.0*1/255,63.0*1/255,80.0*1/255,1)
+                            self.ids.bt_direta.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
                         case 3:
-                            self._ControlePopup.ids.btsoft.background_color = (0.5,0.5,0.5,1)
-                            self._ControlePopup.ids.btinv.background_color = (0.5,0.5,0.5,1)
-                            self._ControlePopup.ids.btdir.background_color = (0,1,0,1)
+                            self.ids.bt_soft.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+                            self.ids.bt_inversor.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+                            self.ids.bt_direta.background_color = (53.0*1/255,63.0*1/255,80.0*1/255,1)
 
                 case 'co_pressostato':
-                    self.ids.lbt6.text = str(self._meas['values']['co_pressostato'])
+                    self.ids.lbt6.text = str(self._meas['values']['co_pressao'])
                 case 'co_fit03':
                     self.ids.lbt7.text = str(self._meas['values']['co_fit03'])
+
 
     def modoPartidaMotor(self, val):
         self.writeData('co_sel_driver', val)
     
-    def acionamentoMotor(self, val):
-
+    def acionamentoMotor(self):
+        val = -1
         match self._meas['values']['co_sel_driver']:
             case 1:
+                if self._meas['values']['co_ats48'] == 1:
+                    val = 0
+                else:
+                    val = 1
                 self.writeData('co_ats48', val)
                 self.writeData('co_atv31', 0)
                 self.writeData('co_tesys', 0)
             case 2:
+                if self._meas['values']['co_atv31'] == 1:
+                    val = 0
+                else:
+                    val = 1
                 self.writeData('co_ats48', 0)
                 self.writeData('co_atv31', val)
                 self.writeData('co_tesys', 0)
             case 3:
+                if self._meas['values']['co_tesys'] == 1:
+                    val = 0
+                else:
+                    val = 1
                 self.writeData('co_ats48', 0)
                 self.writeData('co_atv31', 0)
                 self.writeData('co_tesys', val)
-
+        #Atualiza o ícone do motor
+        match val:
+            case 0:
+                self.ids.bt_motor.background_normal = 'imgs/MotorOff.png'
+            case 1:
+                self.ids.bt_motor.background_normal = 'imgs/MotorOn.png'
         pass
 
     def on_enter_button(self, instance):

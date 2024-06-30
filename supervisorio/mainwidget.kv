@@ -81,59 +81,101 @@
         #     on_release: root._graph['co_fit03'].open()
 
         Button:
-            id:lbt0
+            id:bt_soft
             size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'GRAFICO'
+            color : (53.0*1/255,63.0*1/255,80.0*1/255,1)
+            background_color: (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+            text: 'Soft'
             size: (120,40)
             pos_hint: {'x': 0.002, 'y':0.16}
+            on_release: app.root.modoPartidaMotor(1)
         Button:
-            id:lbt1
+            id:bt_inversor
             size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'COMANDO'
+            color : (53.0*1/255,63.0*1/255,80.0*1/255,1)
+            background_color: (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+            text: 'Inversor'
             size: (120,40)
-            pos_hint: {'x': 0.1, 'y':0.16}
-            on_release: root._ControlePopup.open()
-
+            pos_hint: {'x': 0.002, 'y':0.10}
+            on_release: app.root.modoPartidaMotor(2)
         Button:
-            id:lbt2
+            id:bt_direta
             size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'MEDICOES'
-            size: (120,40)
-            pos_hint: {'x': 0.002, 'y':0.1}
-        Button:
-            id:lbt3
-            size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'TEMP'
-            size: (120,40)
-            pos_hint: {'x': 0.1, 'y':0.1}
-        Button:
-            id:lbt4
-            size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'BD'
+            color : (53.0*1/255,63.0*1/255,80.0*1/255,1)
+            background_color: (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
+            text: 'Direta'
             size: (120,40)
             pos_hint: {'x': 0.002, 'y':0.04}
-        Button:
-            id:lbt5
-            size_hint : (None, None)
-            color : (1,1,1,1)
-            text: 'PID'
-            size: (120,40)
-            pos_hint: {'x': 0.1, 'y':0.04}
+            on_release: app.root.modoPartidaMotor(3)
         
+
+        Button:
+            id: bt_xv2
+            size_hint : (None, None)
+            # size: (130,100)
+            pos_hint: {'x': 0.095, 'y':0.69}
+            background_normal : 'imgs/OpenValve.png'
+            background_down : 'imgs/OpenValve.png'
+            on_release: app.root.toggleBitValue('co_xv2')
+
+        Button:
+            id: bt_xv3 
+            size_hint : (None, None)
+            size: (100,100)
+            pos_hint: {'x': 0.215, 'y':0.69}
+            background_normal : 'imgs/OpenValve.png'
+            background_down : 'imgs/OpenValve.png'
+            on_release: app.root.toggleBitValue('co_xv3')
+           
+        Button:
+            id: bt_xv4
+            size_hint : (None, None)
+            size: (100,100)
+            pos_hint: {'x': 0.338, 'y':0.69}
+            background_normal : 'imgs/OpenValve.png'
+            background_down : 'imgs/OpenValve.png'
+            on_release: app.root.toggleBitValue('co_xv4')
+
+                
+        Button:
+            id: bt_xv5
+            size_hint : (None, None)
+            # size: (100*1.31,100)
+            pos_hint: {'x': 0.458, 'y':0.69}
+            background_normal : 'imgs/OpenValve.png'
+            background_down : 'imgs/OpenValve.png'
+            on_release: app.root.toggleBitValue('co_xv5')
+               
+
+        Button:
+            id: bt_xv6
+            size_hint : (None, None)
+            size: (100,100)
+            pos_hint: {'x': 0.58, 'y':0.69}
+            background_normal : 'imgs/OpenValve.png'
+            background_down : 'imgs/OpenValve.png'
+            on_release: app.root.toggleBitValue('co_xv6')
+
+
+        Button:
+            id: bt_motor
+            size_hint : (None, None)
+            size: (150,150)
+            pos_hint: {'x': 0.1, 'y':0.02}
+            background_normal : 'imgs/motorOn.png'
+            background_down : 'imgs/motorOn.png'
+            on_release: app.root.acionamentoMotor()
+
+
         Button:
             id:lbt6
             size_hint : (None, None)
             background_color: 0, 0, 0, 0  
             color: 0, 0, 0, 1
-            text: 'Pressao'
+            text: 'Pressão'
             size: (120,40)
-            pos_hint: {'x': 0.864, 'y':0.55}
-            on_release: root._graph['co_pressostato'].open()
+            pos_hint: {'x': 0.48, 'y':0.15}
+            on_release: root._graph['co_pressao'].open()
         
         Button:
             id:lbt7
@@ -142,146 +184,58 @@
             color: 0, 0, 0, 1  
             text: 'Fluxo'
             size: (120,40)
-            pos_hint: {'x': 0.432, 'y':0.81}
+            pos_hint: {'x': 0.835, 'y':0.56}
             on_release: root._graph['co_fit03'].open()
 
-
-
-
-        # FloatLayout:
-        #     size_hint: None, None
-        #     size: 21, 21
-        #     pos_hint: {'x': 0.7415, 'y':0.799}
-        #     canvas:
-        #         Color:
-        #             rgba: 0, 1, 0, 1  
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-        Button:
-            id:lbt8
-            size_hint : (None, None)
-            background_color: 0, 0, 0, 0  
-            color: 0, 0, 0, 0  
-            text: ''
-            size: 21, 21
-            pos_hint: {'x': 0.7415, 'y':0.799}
-            on_release: app.root.toggleBitValue('co_xv2')
-
-    
-        # FloatLayout:
-        #     size_hint: None, None
-        #     size: 21, 21
-        #     pos_hint: {'x': 0.7415, 'y':0.699}
-        #     canvas:
-        #         Color:
-        #             rgba: 0, 1, 0, 1  
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-
-        Button:
-            id:lbt9
-            size_hint : (None, None)
-            background_color: 0, 0, 0, 0  
-            color: 0, 0, 0, 1  
-            text: ''
-            size: 21, 21
-            pos_hint: {'x': 0.7415, 'y':0.699}
-            on_release: app.root.toggleBitValue('co_xv3')
-
-        # FloatLayout:
-        #     size_hint: None, None
-        #     size: 21, 21
-        #     pos_hint: {'x': 0.7415, 'y':0.599}
-        #     canvas:
-        #         Color:
-        #             rgba: 0, 1, 0, 1  
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-
-        Button:
-            id:lbt10
-            size_hint : (None, None)
-            background_color: 0, 0, 0, 0 
-            color: 0, 0, 0, 1  
-            text: ''
-            size: 21, 21
-            pos_hint: {'x': 0.7415, 'y':0.599}
-            on_release: app.root.toggleBitValue('co_xv4')
-
-        
-        # FloatLayout:
-        #     size_hint: None, None
-        #     size: 21, 21
-        #     pos_hint: {'x': 0.7415, 'y':0.489}
-        #     canvas:
-        #         Color:
-        #             rgba: 0, 1, 0, 1  
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-
-        Button:
-            id:lbt11
-            size_hint : (None, None)
-            background_color: 0, 0, 0, 0  
-            color: 0, 0, 0, 1  
-            text: ''
-            size: 21, 21
-            pos_hint: {'x': 0.7415, 'y':0.489}
-            on_release: app.root.toggleBitValue('co_xv5')
-
-        # FloatLayout:
-        #     size_hint: None, None
-        #     size: 21, 21
-        #     pos_hint: {'x': 0.7415, 'y':0.384}
-        #     canvas:
-        #         Color:
-        #             rgba: 0, 1, 0, 1  
-        #         Rectangle:
-        #             pos: self.pos
-                    # size: self.size
-
-        Button:
-            id:lbt12
-            size_hint : (None, None)
-            background_color: 0, 0, 0, 0 
-            color: 0, 0, 0, 1  
-            text: ''
-            size: 21, 21
-            pos_hint: {'x': 0.7415, 'y':0.384}
-            on_release: app.root.toggleBitValue('co_xv6')
-
           
-        Label:
-            id: label_torque
-            size_hint : (None, None)
-            text: 'label torque'
-            font_size: 16
-            bold: True
-            halign: 'center'
-            pos_hint: {'x': 0.27, 'y':0.52}
-            color: 1,1,1,1
+        # Label:
+        #     id: label_torque
+        #     size_hint : (None, None)
+        #     text: 'label torque'
+        #     font_size: 16
+        #     bold: True
+        #     halign: 'center'
+        #     pos_hint: {'x': 0.27, 'y':0.52}
+        #     color: 1,1,1,1
             
-        Label:
-            id: label_velocidade
-            size_hint : (None, None)
-            text: 'label velocidade'
-            font_size: 16
-            background_color : (0.5,0.5,0.5,0.5)
-            bold: True
-            halign: 'center'
-            pos_hint: {'x': 0.27, 'y':0.48}
-            color: 1,1,1,1
+        # Label:
+        #     id: label_velocidade
+        #     size_hint : (None, None)
+        #     text: 'label velocidade'
+        #     font_size: 16
+        #     background_color : (0.5,0.5,0.5,0.5)
+        #     bold: True
+        #     halign: 'center'
+        #     pos_hint: {'x': 0.27, 'y':0.48}
+        #     color: 1,1,1,1
+
+        # Ícone de gráfico
+        # Button:
+        #     size_hint : (None, None)
+        #     color : (1,1,1,1)
+        #     size: (0.65*62,0.65*58)
+        #     # on_enter : root.on_enter_button()
+        #     background_normal : 'imgs/graph_icon.jpg'
+        #     background_down : 'imgs/graph_icon.jpg'
+        #     pos_hint: {'x': 0.002, 'y':0.22}
+        #     on_release: root._graph['co_fit03'].open()
+        # # Ícone de gráfico
+        # Button:
+        #     size_hint : (None, None)
+        #     # color : (1,1,1,1)
+        #     size: (100,100)
+        #     # on_enter : root.on_enter_button()
+        #     background_normal : 'imgs/Teste.JPG'
+        #     background_down : 'imgs/Teste.JPG'
+        #     pos_hint: {'x': 0.002, 'y':0.22}
+        #     on_release: root._graph['co_pressostato'].open()
 
 
 
-<TempLabel@Label>
-    text: '-.- C'
-    font_size: 25
-    bold: True
-    halign: 'center'  
-    color: 0,0,0,1
+# <TempLabel@Label>
+#     text: '-.- C'
+#     font_size: 25
+#     bold: True
+#     halign: 'center'  
+#     color: 0,0,0,1
 

@@ -140,44 +140,44 @@
     Label:
         id: label
 
-<ControlePopup>:
-    title: "Controle do sistema"
-    size_hint_y: None
-    size_hint_x: 0.4
-    height: 150
-    BoxLayout:
-        id: layout
-        orientation: 'horizontal'
-        BoxLayout:
-            id: CompressorCommand
-            orientation: 'vertical'
-            Label:
-                text: "Comando do Compressor"
-                fonte_size: 14
-            Button:
-                text: 'Ligar'
-                on_release: app.root.acionamentoMotor(1)
-            Button:
-                text: 'Desligar'
-                on_release: app.root.acionamentoMotor(0)
-            Button:
-                text: 'Reset'
-                on_release: app.root.acionamentoMotor(2)
-        BoxLayout:
-            id: layout
-            orientation: 'vertical'
-            Label:
-                text: "Tipo de partida"
-                fonte_size: 14
-            Button:
-                id: btsoft
-                text: 'ATS48 Soft-start'
-                on_release: app.root.modoPartidaMotor(1)
-            Button:
-                id: btinv
-                text: 'ATV31 Inversor'
-                on_release: app.root.modoPartidaMotor(2)
-            Button:
-                id: btdir
-                text: 'Tesys Direta'
-                on_release: app.root.modoPartidaMotor(3)
+# <ControlePopup>:
+#     title: "Controle do sistema"
+#     size_hint_y: None
+#     size_hint_x: 0.4
+#     height: 150
+#     BoxLayout:
+#         id: layout
+#         orientation: 'horizontal'
+#         BoxLayout:
+#             id: CompressorCommand
+#             orientation: 'vertical'
+#             Label:
+#                 text: "Comando do Compressor"
+#                 fonte_size: 14
+#             Button:
+#                 text: 'Ligar'
+#                 on_release: app.root.acionamentoMotor(1)
+#             Button:
+#                 text: 'Desligar'
+#                 on_release: app.root.acionamentoMotor(0)
+#             Button:
+#                 text: 'Reset'
+#                 on_release: app.root.acionamentoMotor(2)
+#         BoxLayout:
+#             id: layout
+#             orientation: 'vertical'
+#             Label:
+#                 text: "Tipo de partida"
+#                 fonte_size: 14
+#             Button:
+#                 id: btsoft
+#                 text: 'ATS48 Soft-start'
+#                 on_release: app.root.modoPartidaMotor(1)
+#             Button:
+#                 id: btinv
+#                 text: 'ATV31 Inversor'
+#                 on_release: app.root.modoPartidaMotor(2)
+#             Button:
+#                 id: btdir
+#                 text: 'Tesys Direta'
+#                 on_release: app.root.modoPartidaMotor(3)
