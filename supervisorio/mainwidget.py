@@ -2,7 +2,7 @@ from kivy.uix.boxlayout import BoxLayout
 from popups import ModbusPopup, ScanPopup, DataGraphPopup
 from pyModbusTCP.client import ModbusClient
 from kivy.core.window import Window
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
 from datetime import datetime
 import random
@@ -35,6 +35,7 @@ class MainWidget (BoxLayout):
         self._modbusPopup = ModbusPopup(self._serverIP, self._serverPort)
         self._scanPopup = ScanPopup(scantime = self._scan_time)
         self._modbusClient = ModbusClient(host = self._serverIP, port = self._serverPort)
+        self._lock = Lock()
         self._meas = {}
         self._meas ['timestamp'] = None
         self._meas ['values'] = {}
@@ -110,17 +111,22 @@ class MainWidget (BoxLayout):
         '''
         Metodo para leitura dos dados por meio do protocolo MODBUS
         '''
+        self._lock.acquire()
         self._meas ['timestamp'] = datetime.now()
+        self._lock.release()
         for key, value in self._tags.items():
+            self._lock.acquire()
             if value['bit'] != None:
                 self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'],1)[0] & (1 << value['bit'])) >> value['bit'])
             else:
                 self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
+            self._lock.release()
         # self._meas['values']['co_pressostato'] = int(random.random() * 100) 
         # self._meas['values']['co_fit03'] = int (random.random() * 100) 
         
     
     def writeData(self, tag, value):
+        self._lock.acquire()
         if self._modbusClient.is_open:
             if self._tags[tag]['bit'] != None:
                 val = self._modbusClient.read_holding_registers(self._tags[tag]['address'],1)[0]
@@ -131,24 +137,20 @@ class MainWidget (BoxLayout):
                 self._modbusClient.write_single_register(self._tags[tag]['address'], val)
             else:
                 self._modbusClient.write_single_register(self._tags[tag]['address'], value)
-        
+        self._lock.release()
 
         pass
 
     def toggleBitValue(self, tag):
+        self._lock.acquire()
         if self._modbusClient.is_open:
             val = self._modbusClient.read_holding_registers(self._tags[tag]['address'],1)[0]
             val ^= (1 << self._tags[tag]['bit'])
             self._modbusClient.write_single_register(self._tags[tag]['address'], val)
             # print('aqui')
             # self.ids.lbt8.background_color = (1,0,0,1)
+        self._lock.release()
 
-        
-
-
-    def updateGraphs(self):
-        for tag in self._tags_with_graphs:
-            self._graph[tag].ids.graph.updateGraph((self._meas['timestamp'], self._meas['values'][tag]),0)
         
     def updateGUI(self):
         """
@@ -162,8 +164,18 @@ class MainWidget (BoxLayout):
         # #Atualizar nivel do termometro 
         # self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
         #Atualizacao do grafico
+        self._lock.acquire()
         self.updateGraphs()
+        self._lock.release()
+
+        self._lock.acquire()
         self.updateVisualElements()
+        self._lock.release()
+
+
+    def updateGraphs(self):
+        for tag in self._tags_with_graphs:
+            self._graph[tag].ids.graph.updateGraph((self._meas['timestamp'], self._meas['values'][tag]),0)
 
 
     def updateVisualElements(self):
@@ -224,12 +236,14 @@ class MainWidget (BoxLayout):
     
     def acionamentoMotor(self):
         val = -1
+        self._lock.acquire()
         match self._meas['values']['co_sel_driver']:
             case 1:
                 if self._meas['values']['co_ats48'] == 1:
                     val = 0
                 else:
                     val = 1
+                self._lock.release()
                 self.writeData('co_ats48', val)
                 self.writeData('co_atv31', 0)
                 self.writeData('co_tesys', 0)
@@ -238,6 +252,7 @@ class MainWidget (BoxLayout):
                     val = 0
                 else:
                     val = 1
+                self._lock.release()
                 self.writeData('co_ats48', 0)
                 self.writeData('co_atv31', val)
                 self.writeData('co_tesys', 0)
@@ -246,6 +261,7 @@ class MainWidget (BoxLayout):
                     val = 0
                 else:
                     val = 1
+                self._lock.release()
                 self.writeData('co_ats48', 0)
                 self.writeData('co_atv31', 0)
                 self.writeData('co_tesys', val)
