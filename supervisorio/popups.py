@@ -33,7 +33,9 @@ class ModbusPopup(Popup):
     
 #     pass
 
-
+class motorPopup(Popup):
+    
+    pass
 
 class ScanPopup(Popup):
     """
@@ -50,11 +52,12 @@ class ScanPopup(Popup):
 
 class DataGraphPopup(Popup):
 
-    def __init__(self, xmax, plot_color, tag, **kwargs):
+    def __init__(self, xmax, plot_color, **kwargs):
         super().__init__(**kwargs)
         self.plot = LinePlot(line_width = 1.5, color = plot_color)
         self.ids.graph.add_plot(self.plot)
         self.ids.graph.xmax = xmax
+        
 
 class LabelCheckBoxDataGraph(BoxLayout):
     pass

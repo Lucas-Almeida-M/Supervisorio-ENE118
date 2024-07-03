@@ -1,5 +1,5 @@
 from kivy.uix.boxlayout import BoxLayout
-from popups import ModbusPopup, ScanPopup, DataGraphPopup
+from popups import ModbusPopup, ScanPopup, DataGraphPopup, motorPopup
 from pyModbusTCP.client import ModbusClient
 from kivy.core.window import Window
 from threading import Thread, Lock
@@ -19,6 +19,7 @@ class MainWidget (BoxLayout):
     _updateThread = None
     _updateWidgets = True
     _tags = {}
+    _pressure = 0.5
     _max_points = 20
     _tags_with_graphs = ['co_pressao','co_fit03']
 
@@ -36,6 +37,9 @@ class MainWidget (BoxLayout):
         self._scanPopup = ScanPopup(scantime = self._scan_time)
         self._modbusClient = ModbusClient(host = self._serverIP, port = self._serverPort)
         self._lock = Lock()
+
+        self._motorPopup = motorPopup()
+        self._bar = self.ids.pressure_bar
         self._meas = {}
         self._meas ['timestamp'] = None
         self._meas ['values'] = {}
@@ -47,12 +51,15 @@ class MainWidget (BoxLayout):
             self._tags[tag]['color'] = plot_color
         
         self._graph = {}
-        for i in range (len (self._tags_with_graphs)):
-            self._graph[self._tags_with_graphs[i]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[i]]['color'], self._tags_with_graphs[i]))
-            if self._tags_with_graphs[i] == 'co_pressao':
-                self._graph[self._tags_with_graphs[i]].title = 'Pressão'
-            if self._tags_with_graphs[i] == 'co_fit03':
-                self._graph[self._tags_with_graphs[i]].title = 'fluxo'
+        
+        self._graph[self._tags_with_graphs[0]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[0]]['color']))
+        self._graph[self._tags_with_graphs[0]].title = 'Pressão'
+        self._graph[self._tags_with_graphs[0]].ids.graph.ylabel = 'Pressao' 
+        
+
+        self._graph[self._tags_with_graphs[1]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[1]]['color']))
+        self._graph[self._tags_with_graphs[1]].title = 'Fluxo'
+        self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo' 
 
 
         # for key,value in kwargs.get('modbus_CLP').items():
@@ -121,8 +128,11 @@ class MainWidget (BoxLayout):
             else:
                 self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
             self._lock.release()
-        # self._meas['values']['co_pressostato'] = int(random.random() * 100) 
-        # self._meas['values']['co_fit03'] = int (random.random() * 100) 
+        self._lock.acquire()
+        self._meas['values']['co_pressao'] = 50#int(random.random() * 100) 
+        self._meas['values']['co_fit03'] = 30#int (random.random() * 100) 
+        self._lock.release()
+       
         
     
     def writeData(self, tag, value):
@@ -171,6 +181,8 @@ class MainWidget (BoxLayout):
         self._lock.acquire()
         self.updateVisualElements()
         self._lock.release()
+
+        self._bar.pressure = random.random()
 
 
     def updateGraphs(self):
@@ -230,6 +242,23 @@ class MainWidget (BoxLayout):
                 case 'co_fit03':
                     self.ids.lbt7.text = str(self._meas['values']['co_fit03'])
 
+                case 't1':
+                    self._motorPopup.ids.var1.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var2.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var3.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var4.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var5.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var6.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var7.text = f"{self._meas['values']['t1']}"
+                case 't1':
+                    self._motorPopup.ids.var8.text = f"{self._meas['values']['t1']}"
+
 
     def modoPartidaMotor(self, val):
         self.writeData('co_sel_driver', val)
@@ -237,40 +266,48 @@ class MainWidget (BoxLayout):
     def acionamentoMotor(self):
         val = -1
         self._lock.acquire()
-        match self._meas['values']['co_sel_driver']:
-            case 1:
-                if self._meas['values']['co_ats48'] == 1:
-                    val = 0
-                else:
-                    val = 1
-                self._lock.release()
-                self.writeData('co_ats48', val)
-                self.writeData('co_atv31', 0)
-                self.writeData('co_tesys', 0)
-            case 2:
-                if self._meas['values']['co_atv31'] == 1:
-                    val = 0
-                else:
-                    val = 1
-                self._lock.release()
-                self.writeData('co_ats48', 0)
-                self.writeData('co_atv31', val)
-                self.writeData('co_tesys', 0)
-            case 3:
-                if self._meas['values']['co_tesys'] == 1:
-                    val = 0
-                else:
-                    val = 1
-                self._lock.release()
-                self.writeData('co_ats48', 0)
-                self.writeData('co_atv31', 0)
-                self.writeData('co_tesys', val)
-        #Atualiza o ícone do motor
-        match val:
-            case 0:
-                self.ids.bt_motor.background_normal = 'imgs/MotorOff.png'
-            case 1:
-                self.ids.bt_motor.background_normal = 'imgs/MotorOn.png'
+        try:
+            match self._meas['values']['co_sel_driver']:
+                case 1:
+                    if self._meas['values']['co_ats48'] == 1:
+                        val = 0
+                    else:
+                        val = 1
+                    self._lock.release()
+                    self.writeData('co_ats48', val)
+                    self.writeData('co_atv31', 0)
+                    self.writeData('co_tesys', 0)
+                case 2:
+                    if self._meas['values']['co_atv31'] == 1:
+                        val = 0
+                    else:
+                        val = 1
+                    self._lock.release()
+                    self.writeData('co_ats48', 0)
+                    self.writeData('co_atv31', val)
+                    self.writeData('co_tesys', 0)
+                case 3:
+                    if self._meas['values']['co_tesys'] == 1:
+                        val = 0
+                    else:
+                        val = 1
+                    self._lock.release()
+                    self.writeData('co_ats48', 0)
+                    self.writeData('co_atv31', 0)
+                    self.writeData('co_tesys', val)
+            #Atualiza o ícone do motor
+            match val:
+                case 0:
+                    self.ids.bt_motor.background_normal = 'imgs/MotorOff.png'
+                case 1:
+                    self.ids.bt_motor.background_normal = 'imgs/MotorOn.png'
+        except Exception as e:
+            self._lock.release()
+            print(e)
+        pass
+
+    def openMotorStatus(self):
+        self._motorPopup.open()
         pass
 
     def on_enter_button(self, instance):
@@ -281,3 +318,7 @@ class MainWidget (BoxLayout):
 
 
 
+# class PressureBar(BoxLayout):
+#     pressure = 0.4
+#     def set_pressure(self, value):
+#         self.pressure = value

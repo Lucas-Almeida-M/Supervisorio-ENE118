@@ -187,7 +187,30 @@
             pos_hint: {'x': 0.835, 'y':0.56}
             on_release: root._graph['co_fit03'].open()
 
-          
+        Button:
+            id:lbt8
+            size_hint : (None, None)
+            color : (53.0*1/255,63.0*1/255,80.0*1/255,1)
+            background_color: (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255) 
+            text: 'Status'
+            size: (120,40)
+            pos_hint: {'x': 0.108, 'y':0.23}
+            on_release: app.root.openMotorStatus()
+
+#         PressureBar:
+#             id: pressure_bar
+#             size_hint_y: None
+#             height: '40'
+
+# <PressureBar>:
+#     canvas:
+#         Color:
+#             rgba: 0, 1, 0, 1 
+#         Rectangle:
+#             pos: self.pos
+#             size: self.width * self.pressure, self.height
+
+     # Initial pressure value (0 to 1)
         # Label:
         #     id: label_torque
         #     size_hint : (None, None)
