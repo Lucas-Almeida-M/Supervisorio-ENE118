@@ -39,7 +39,6 @@ class MainWidget (BoxLayout):
         self._lock = Lock()
 
         self._motorPopup = motorPopup()
-        self._bar = self.ids.pressure_bar
         self._meas = {}
         self._meas ['timestamp'] = None
         self._meas ['values'] = {}
@@ -128,10 +127,12 @@ class MainWidget (BoxLayout):
             else:
                 self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
             self._lock.release()
-        self._lock.acquire()
-        self._meas['values']['co_pressao'] = 50#int(random.random() * 100) 
-        self._meas['values']['co_fit03'] = 30#int (random.random() * 100) 
-        self._lock.release()
+
+            
+        #self._lock.acquire()
+        #self._meas['values']['co_pressao'] = 50#int(random.random() * 100) 
+        #self._meas['values']['co_fit03'] = 30#int (random.random() * 100) 
+        #self._lock.release()
        
         
     
@@ -182,7 +183,7 @@ class MainWidget (BoxLayout):
         self.updateVisualElements()
         self._lock.release()
 
-        self._bar.pressure = random.random()
+        #self._bar.pressure = random.random()
 
 
     def updateGraphs(self):
@@ -242,29 +243,33 @@ class MainWidget (BoxLayout):
                 case 'co_fit03':
                     self.ids.lbt7.text = str(self._meas['values']['co_fit03'])
 
-                case 't1':
-                    self._motorPopup.ids.var1.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var2.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var3.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var4.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var5.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var6.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var7.text = f"{self._meas['values']['t1']}"
-                case 't1':
-                    self._motorPopup.ids.var8.text = f"{self._meas['values']['t1']}"
+                case 'co_tensao_rs':
+                    self._motorPopup.ids.var1.text = f"{self._meas['values']['co_tensao_rs']}"
+                case 'co_tensao_st':
+                    self._motorPopup.ids.var2.text = f"{self._meas['values']['co_tensao_st']}"
+                case 'co_tensao_tr':
+                    self._motorPopup.ids.var3.text = f"{self._meas['values']['co_tensao_tr']}"
+                case 'co_corrente_r':
+                    self._motorPopup.ids.var4.text = f"{self._meas['values']['co_corrente_r']}"
+                case 'co_corrente_s':
+                    self._motorPopup.ids.var5.text = f"{self._meas['values']['co_corrente_s']}"
+                case 'co_corrente_t':
+                    self._motorPopup.ids.var6.text = f"{self._meas['values']['co_corrente_r']}"
+                case 'co_ativa_total':
+                    self._motorPopup.ids.var7.text = f"{self._meas['values']['co_ativa_total']}"
+                case 'co_temp_carc':
+                    self._motorPopup.ids.var8.text = f"{self._meas['values']['co_temp_carc']}"
+                case 'co_habilita':
+                    if self._meas['values']['co_habilita']:
+                        self.ids.bt_motor.background_normal = 'imgs/MotorOn.png'
+                    else:
+                        self.ids.bt_motor.background_normal = 'imgs/MotorOff.png'
 
 
     def modoPartidaMotor(self, val):
         self.writeData('co_sel_driver', val)
     
     def acionamentoMotor(self):
-        val = -1
         self._lock.acquire()
         try:
             match self._meas['values']['co_sel_driver']:
