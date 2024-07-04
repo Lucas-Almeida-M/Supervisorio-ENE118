@@ -174,7 +174,7 @@
             color: 0, 0, 0, 1
             text: 'Pressão'
             size: (120,40)
-            pos_hint: {'x': 0.48, 'y':0.15}
+            pos_hint: {'x': 0.48, 'y':0.18}
             on_release: root._graph['co_pressao'].open()
         
         Button:
@@ -184,7 +184,7 @@
             color: 0, 0, 0, 1  
             text: 'Fluxo'
             size: (120,40)
-            pos_hint: {'x': 0.835, 'y':0.56}
+            pos_hint: {'x': 0.835, 'y':0.66}
             on_release: root._graph['co_fit03'].open()
 
         Button:
@@ -197,68 +197,39 @@
             pos_hint: {'x': 0.108, 'y':0.23}
             on_release: app.root.openMotorStatus()
 
-#         PressureBar:
-#             id: pressure_bar
-#             size_hint_y: None
-#             height: '40'
+        Label:
+            id: lb_pressure
+            size_hint: (None, None)
+            size: pressure.size[0], pressure.size[1]*0.41 
+            pos_hint: {'x': 0.45, 'y': 0.15}
+            canvas:
+                Color:
+                    rgb: 0.5, 0.5, 0.5
+                Rectangle:
+                    size: self.size
+                    pos: (self.pos[0], self.pos[1] - self.height*0.5)
 
-# <PressureBar>:
-#     canvas:
-#         Color:
-#             rgba: 0, 1, 0, 1 
-#         Rectangle:
-#             pos: self.pos
-#             size: self.width * self.pressure, self.height
+        Image:
+            id: pressure
+            source: 'imgs/pressure.png'
+            size_hint: (0.17, 0.17)
+            pos_hint: {'x': 0.45, 'y': 0.065}
 
-     # Initial pressure value (0 to 1)
-        # Label:
-        #     id: label_torque
-        #     size_hint : (None, None)
-        #     text: 'label torque'
-        #     font_size: 16
-        #     bold: True
-        #     halign: 'center'
-        #     pos_hint: {'x': 0.27, 'y':0.52}
-        #     color: 1,1,1,1
-            
-        # Label:
-        #     id: label_velocidade
-        #     size_hint : (None, None)
-        #     text: 'label velocidade'
-        #     font_size: 16
-        #     background_color : (0.5,0.5,0.5,0.5)
-        #     bold: True
-        #     halign: 'center'
-        #     pos_hint: {'x': 0.27, 'y':0.48}
-        #     color: 1,1,1,1
+        Label:
+            id: lb_fluxo
+            size_hint: (None, None)
+            size: fluxo.size[0], fluxo.size[1]*0.41 
+            pos_hint: {'x': 0.8, 'y': 0.622}
+            canvas:
+                Color:
+                    rgb: 0.5, 0.5, 0.5
+                Rectangle:
+                    size: self.size
+                    pos: (self.pos[0], self.pos[1] - self.height*0.5)
 
-        # Ícone de gráfico
-        # Button:
-        #     size_hint : (None, None)
-        #     color : (1,1,1,1)
-        #     size: (0.65*62,0.65*58)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/graph_icon.jpg'
-        #     background_down : 'imgs/graph_icon.jpg'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_fit03'].open()
-        # # Ícone de gráfico
-        # Button:
-        #     size_hint : (None, None)
-        #     # color : (1,1,1,1)
-        #     size: (100,100)
-        #     # on_enter : root.on_enter_button()
-        #     background_normal : 'imgs/Teste.JPG'
-        #     background_down : 'imgs/Teste.JPG'
-        #     pos_hint: {'x': 0.002, 'y':0.22}
-        #     on_release: root._graph['co_pressostato'].open()
-
-
-
-# <TempLabel@Label>
-#     text: '-.- C'
-#     font_size: 25
-#     bold: True
-#     halign: 'center'  
-#     color: 0,0,0,1
+        Image:
+            id: fluxo
+            source: 'imgs/pressure.png'
+            size_hint: (0.17, 0.17)
+            pos_hint: {'x': 0.8, 'y': 0.535}
 

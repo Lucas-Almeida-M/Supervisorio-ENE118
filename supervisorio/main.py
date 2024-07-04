@@ -11,17 +11,17 @@ class MainApp(App):
 
     def build(self):
        
-        self._widget = MainWidget(scan_time = 1000, server_ip = '192.168.0.14', server_port = 502,
+        self._widget = MainWidget(scan_time = 1000, server_ip = '127.0.0.1', server_port = 502,
         modbus_CLP = 
         [
             {'tipo': '4X', 'address': 708, 'bit': None, 'tag': 'co_tipo_motor', 'div': 1},
             {'tipo': '4X', 'address': 710, 'bit': None, 'tag': 'co_pressostato', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 0, 'tag': 'co_xv1', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 1, 'tag': 'co_xv2', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 2, 'tag': 'co_xv3', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 3, 'tag': 'co_xv4', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 4, 'tag': 'co_xv5', 'div': 1},
-            {'tipo': '4X', 'address': 712, 'bit': 5, 'tag': 'co_xv6', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 0   , 'tag': 'co_xv1', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 1   , 'tag': 'co_xv2', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 2   , 'tag': 'co_xv3', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 3   , 'tag': 'co_xv4', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 4   , 'tag': 'co_xv5', 'div': 1},
+            {'tipo': '4X', 'address': 712, 'bit': 5   , 'tag': 'co_xv6', 'div': 1},
             {'tipo': '4X', 'address': 714, 'bit': None, 'tag': 'co_pv_pid', 'div': 1},
             {'tipo': '4X', 'address': 722, 'bit': None, 'tag': 'co_status_pid', 'div': 1},
             {'tipo': 'FP', 'address': 700, 'bit': None, 'tag': 'co_temp_r', 'div': 10},
@@ -88,7 +88,7 @@ class MainApp(App):
             {'tipo': '4X', 'address': 1214, 'bit': None, 'tag': 'co_energia_aparente', 'div': 1},
             {'tipo': '4X', 'address': 1312, 'bit': None, 'tag': 'co_atv31', 'div': 1},
             {'tipo': '4X', 'address': 1313, 'bit': None, 'tag': 'co_atv31_velocidade', 'div': 10},
-            {'tipo': '4X', 'address': 1328, 'bit': 1, 'tag': 'co_habilita', 'div': 1},
+            {'tipo': '4X', 'address': 1328, 'bit': 1   , 'tag': 'co_habilita', 'div': 1},
             {'tipo': 'FP', 'address': 1302, 'bit': None, 'tag': 'co_sp_pid', 'div': 1},
             {'tipo': 'FP', 'address': 1304, 'bit': None, 'tag': 'co_p', 'div': 1},
             {'tipo': 'FP', 'address': 1306, 'bit': None, 'tag': 'co_i', 'div': 1},

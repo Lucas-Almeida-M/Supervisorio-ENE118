@@ -7,6 +7,10 @@ from time import sleep
 from datetime import datetime
 import random
 from timeseriesgraph import TimeSeriesGraph
+from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadDecoder
+
+
 
 
 
@@ -22,6 +26,10 @@ class MainWidget (BoxLayout):
     _pressure = 0.5
     _max_points = 20
     _tags_with_graphs = ['co_pressao','co_fit03']
+    _tags_with_graphs_values = {
+    'co_pressao': {'max': 5, 'min': 0},
+    'co_fit03': {'max': 5, 'min': 0}
+    }   
 
     def __init__(self, **kwargs):
         """
@@ -115,24 +123,35 @@ class MainWidget (BoxLayout):
 
     def readData(self):
         '''
-        Metodo para leitura dos dados por meio do protocolo MODBUS
+        Method for reading data using the MODBUS protocol
         '''
         self._lock.acquire()
-        self._meas ['timestamp'] = datetime.now()
+        self._meas['timestamp'] = datetime.now()
         self._lock.release()
+        
         for key, value in self._tags.items():
             self._lock.acquire()
-            if value['bit'] != None:
-                self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'],1)[0] & (1 << value['bit'])) >> value['bit'])
-            else:
-                self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'],1)[0] / value['div']
-            self._lock.release()
+            try:
+                if value['bit'] is not None:
+                    self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'], 1)[0] & (1 << value['bit'])) >> value['bit'])
+                else:
+                    if value['tipo'] == 'FP':
+                        decoder = BinaryPayloadDecoder.fromRegisters(self._modbusClient.read_holding_registers(value['address'], 4))
+                        self._meas['values'][key] = decoder.decode_32bit_float()
+                    else:
+                        self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'], 1)[0] / value['div']
+            except Exception as e:
+                # Handle exceptions appropriately
+                print(f"Error reading and decoding {key}: {e}")
+            finally:
+                self._lock.release()
+        
 
             
-        #self._lock.acquire()
-        #self._meas['values']['co_pressao'] = 50#int(random.random() * 100) 
-        #self._meas['values']['co_fit03'] = 30#int (random.random() * 100) 
-        #self._lock.release()
+        self._lock.acquire()
+        self._meas['values']['co_fit03'] = random.random() * 5
+        self._meas['values']['co_pressao'] = random.random() * 5
+        self._lock.release()
        
         
     
@@ -183,7 +202,20 @@ class MainWidget (BoxLayout):
         self.updateVisualElements()
         self._lock.release()
 
-        #self._bar.pressure = random.random()
+
+
+        self._lock.acquire()
+        pressure_size_x = self.ids.pressure.size[0]
+        mapped_size_x = pressure_size_x * (0.15 + 0.7 * (self._meas['values']['co_pressao'] / self._tags_with_graphs_values["co_pressao"]['max']))
+        self.ids.lb_pressure.size = (mapped_size_x, self.ids.lb_pressure.size[1])
+        self._lock.release()
+
+        self._lock.acquire()
+        fluxo_size_x = self.ids.fluxo.size[0]
+        mapped_size_x = fluxo_size_x * (0.15 + 0.7 * (self._meas['values']['co_fit03'] / self._tags_with_graphs_values["co_pressao"]['max']))
+        self.ids.lb_fluxo.size = (mapped_size_x, self.ids.lb_fluxo.size[1])
+        self._lock.release()
+        # self._bar.pressure = random.random()
 
 
     def updateGraphs(self):
@@ -246,24 +278,31 @@ class MainWidget (BoxLayout):
                 case 'co_tensao_rs':
                     self._motorPopup.ids.var1.text = f"{self._meas['values']['co_tensao_rs']}"
                 case 'co_tensao_st':
-                    self._motorPopup.ids.var2.text = f"{self._meas['values']['co_tensao_st']}"
+                    self._motorPopup.ids.var3.text = f"{self._meas['values']['co_tensao_st']}"
                 case 'co_tensao_tr':
-                    self._motorPopup.ids.var3.text = f"{self._meas['values']['co_tensao_tr']}"
+                    self._motorPopup.ids.var5.text = f"{self._meas['values']['co_tensao_tr']}"
                 case 'co_corrente_r':
-                    self._motorPopup.ids.var4.text = f"{self._meas['values']['co_corrente_r']}"
+                    self._motorPopup.ids.var2.text = f"{self._meas['values']['co_corrente_r']}"
                 case 'co_corrente_s':
-                    self._motorPopup.ids.var5.text = f"{self._meas['values']['co_corrente_s']}"
+                    self._motorPopup.ids.var4.text = f"{self._meas['values']['co_corrente_s']}"
                 case 'co_corrente_t':
                     self._motorPopup.ids.var6.text = f"{self._meas['values']['co_corrente_r']}"
-                case 'co_ativa_total':
-                    self._motorPopup.ids.var7.text = f"{self._meas['values']['co_ativa_total']}"
+                case 'co_aparente_total':
+                    self._motorPopup.ids.var7.text = f"{self._meas['values']['co_aparente_total']}"
+                case 'co_fp_total':
+                    self._motorPopup.ids.var8.text = f"{self._meas['values']['co_fp_total']}"
+                case 'co_frequencia':
+                    self._motorPopup.ids.var9.text = f"{self._meas['values']['co_frequencia']}"
                 case 'co_temp_carc':
-                    self._motorPopup.ids.var8.text = f"{self._meas['values']['co_temp_carc']}"
+                    self._motorPopup.ids.var10.text = f"{self._meas['values']['co_temp_carc']}"
+
+
                 case 'co_habilita':
                     if self._meas['values']['co_habilita']:
                         self.ids.bt_motor.background_normal = 'imgs/MotorOn.png'
                     else:
                         self.ids.bt_motor.background_normal = 'imgs/MotorOff.png'
+
 
 
     def modoPartidaMotor(self, val):

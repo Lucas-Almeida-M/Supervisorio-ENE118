@@ -50,59 +50,82 @@
 <motorPopup>:
     title: "Variáveis do Motor"
     size_hint_y: None
-    size_hint_x: 0.3
-    height: 450
-    width: 60
+    size_hint_x: 0.6
+    height: 350
+    width: 450
     BoxLayout:
         id: blayout
         orientation: "vertical"
         padding: [10, 10, 10, 10]
         GridLayout:
-            cols: 2
+            cols: 4
             row_default_height: 40
             row_force_default: True
             size_hint_y: None
             height: self.minimum_height
+            padding: [20, 5]
             Label:
                 text: "Tensao linha RS [V]:"
             Label:
                 id: var1
                 text: "0"
+
             Label:
-                text: "Tensao linha ST [V]:"
+                text: "Corrente fase R [A]:"
             Label:
                 id: var2
                 text: "0"
+
             Label:
-                text: "Tensao linha TR [V]:"
+                text: "Tensao linha ST [V]:"
             Label:
                 id: var3
                 text: "0"
+
             Label:
-                text: "Corrente fase R [A]:"
+                text: "Corrente fase S [A]:"
             Label:
                 id: var4
                 text: "0"
+
             Label:
-                text: "Corrente fase R [A]:"
+                text: "Tensao linha TR [V]:"
             Label:
                 id: var5
                 text: "0"
+
             Label:
                 text: "Corrente fase T [A]:"
             Label:
                 id: var6
                 text: "0"
+
             Label:
-                text: "Potencia [W]:"
+                text: "Potencia Aparente [kVA]:"
             Label:
                 id: var7
                 text: "0"
+
             Label:
-                text: "Temperatura [C]:"
+                text: "Fator de potencia:"
             Label:
                 id: var8
                 text: "0"
+            
+            Label:
+                text: "Frequencia [Hz]:"
+            Label:
+                id: var9
+                text: "0"
+
+            Label:
+                text: "Temperatura [C]:"
+            Label:
+                id: var10
+                text: "0"
+
+           
+            
         BoxLayout:
             orientation: 'horizontal'
             Button:
@@ -147,6 +170,7 @@
                 text: 'Fechar'
                 on_release:
                     root.dismiss()
+
 <DataGraphPopup>
     title: ''
     BoxLayout:
@@ -166,7 +190,7 @@
             ygrid: True
             xmin: 0
             ymin: 0
-            ymax: 40000
+            ymax: 8
         BoxLayout: 
             orientation: 'vertical'
             size_hint: (1,0.05)
