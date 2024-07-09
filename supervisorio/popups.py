@@ -52,12 +52,19 @@ class ScanPopup(Popup):
 
 class DataGraphPopup(Popup):
 
-    def __init__(self, xmax, plot_color, **kwargs):
+    def __init__(self, xmax, plot_color, ymax, **kwargs):
         super().__init__(**kwargs)
         self.plot = LinePlot(line_width = 1.5, color = plot_color)
         self.ids.graph.add_plot(self.plot)
         self.ids.graph.xmax = xmax
+        self.ids.graph.ymax = ymax
         
 
 class LabelCheckBoxDataGraph(BoxLayout):
     pass
+
+#class HistGraphPopup(Popup):
+ #   def __init__(self, **kwargs):
+  #      super().__init__()
+   #     for key,value in kwargs.get('tags').items():
+            

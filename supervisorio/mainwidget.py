@@ -11,11 +11,6 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 
 
-
-
-
-
-
 class MainWidget (BoxLayout):
     """
     Widget principal da aplicação
@@ -24,11 +19,12 @@ class MainWidget (BoxLayout):
     _updateWidgets = True
     _tags = {}
     _pressure = 0.5
-    _max_points = 20
-    _tags_with_graphs = ['co_pressao','co_fit03']
+    _max_points = 15
+    _max_y = [6,15]
+    _tags_with_graphs = ['co_pressao','co_fit02']
     _tags_with_graphs_values = {
     'co_pressao': {'max': 5, 'min': 0},
-    'co_fit03': {'max': 5, 'min': 0}
+    'co_fit02': {'max': 15, 'min': 0}
     }   
 
     def __init__(self, **kwargs):
@@ -59,12 +55,12 @@ class MainWidget (BoxLayout):
         
         self._graph = {}
         
-        self._graph[self._tags_with_graphs[0]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[0]]['color']))
+        self._graph[self._tags_with_graphs[0]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[0]]['color'], self._max_y[0]))
         self._graph[self._tags_with_graphs[0]].title = 'Pressão'
         self._graph[self._tags_with_graphs[0]].ids.graph.ylabel = 'Pressao' 
         
 
-        self._graph[self._tags_with_graphs[1]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[1]]['color']))
+        self._graph[self._tags_with_graphs[1]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[1]]['color'], self._max_y[1]))
         self._graph[self._tags_with_graphs[1]].title = 'Fluxo'
         self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo' 
 
@@ -136,8 +132,8 @@ class MainWidget (BoxLayout):
                     self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'], 1)[0] & (1 << value['bit'])) >> value['bit'])
                 else:
                     if value['tipo'] == 'FP':
-                        decoder = BinaryPayloadDecoder.fromRegisters(self._modbusClient.read_holding_registers(value['address'], 4))
-                        self._meas['values'][key] = decoder.decode_32bit_float()
+                        decoder = BinaryPayloadDecoder.fromRegisters(self._modbusClient.read_holding_registers(value['address'], 2), Endian.BIG, Endian.LITTLE)
+                        self._meas['values'][key] = round(decoder.decode_32bit_float()/value['div'],3)
                     else:
                         self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'], 1)[0] / value['div']
             except Exception as e:
@@ -148,10 +144,10 @@ class MainWidget (BoxLayout):
         
 
             
-        self._lock.acquire()
-        self._meas['values']['co_fit03'] = random.random() * 5
-        self._meas['values']['co_pressao'] = random.random() * 5
-        self._lock.release()
+        #self._lock.acquire()
+        #self._meas['values']['co_fit02'] = random.random() * 5
+        #self._meas['values']['co_pressao'] = random.random() * 5
+        #self._lock.release()
        
         
     
@@ -212,7 +208,7 @@ class MainWidget (BoxLayout):
 
         self._lock.acquire()
         fluxo_size_x = self.ids.fluxo.size[0]
-        mapped_size_x = fluxo_size_x * (0.15 + 0.7 * (self._meas['values']['co_fit03'] / self._tags_with_graphs_values["co_pressao"]['max']))
+        mapped_size_x = fluxo_size_x * (0.15 + 0.7 * (self._meas['values']['co_fit02'] / self._tags_with_graphs_values["co_fit02"]['max']))
         self.ids.lb_fluxo.size = (mapped_size_x, self.ids.lb_fluxo.size[1])
         self._lock.release()
         # self._bar.pressure = random.random()
@@ -270,10 +266,10 @@ class MainWidget (BoxLayout):
                             self.ids.bt_inversor.background_color = (214.0*2.5/255, 220.0*2.5/255, 229.0*2.5/255)
                             self.ids.bt_direta.background_color = (53.0*1/255,63.0*1/255,80.0*1/255,1)
 
-                case 'co_pressostato':
-                    self.ids.lbt6.text = str(self._meas['values']['co_pressao'])
-                case 'co_fit03':
-                    self.ids.lbt7.text = str(self._meas['values']['co_fit03'])
+                case 'co_pressao':
+                    self.ids.lbt6.text = str(self._meas['values']['co_pressao']) + ' ' +  '[Kgf/cm2]'
+                case 'co_fit02':
+                    self.ids.lbt7.text = str(self._meas['values']['co_fit02']) + ' ' +  '[Nm3/min]'
 
                 case 'co_tensao_rs':
                     self._motorPopup.ids.var1.text = f"{self._meas['values']['co_tensao_rs']}"
@@ -290,12 +286,11 @@ class MainWidget (BoxLayout):
                 case 'co_aparente_total':
                     self._motorPopup.ids.var7.text = f"{self._meas['values']['co_aparente_total']}"
                 case 'co_fp_total':
-                    self._motorPopup.ids.var8.text = f"{self._meas['values']['co_fp_total']}"
+                    self._motorPopup.ids.var8.text = f"{self._meas['values']['co_fp_total']}" if self._meas['values']['co_fp_total'] <= 1 else f"{0}"
                 case 'co_frequencia':
                     self._motorPopup.ids.var9.text = f"{self._meas['values']['co_frequencia']}"
                 case 'co_temp_carc':
                     self._motorPopup.ids.var10.text = f"{self._meas['values']['co_temp_carc']}"
-
 
                 case 'co_habilita':
                     if self._meas['values']['co_habilita']:

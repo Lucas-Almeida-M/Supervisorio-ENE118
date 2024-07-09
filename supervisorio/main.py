@@ -11,7 +11,7 @@ class MainApp(App):
 
     def build(self):
        
-        self._widget = MainWidget(scan_time = 1000, server_ip = '127.0.0.1', server_port = 502,
+        self._widget = MainWidget(scan_time = 500, server_ip = '192.168.0.14', server_port = 502,
         modbus_CLP = 
         [
             {'tipo': '4X', 'address': 708, 'bit': None, 'tag': 'co_tipo_motor', 'div': 1},

@@ -190,7 +190,6 @@
             ygrid: True
             xmin: 0
             ymin: 0
-            ymax: 8
         BoxLayout: 
             orientation: 'vertical'
             size_hint: (1,0.05)
@@ -231,6 +230,66 @@
     Label:
         id: label
 
+
+<HistGraphPopup>:
+    title: 'Historicos'
+    BoxLayout:
+        orientation: 'vertical' 
+        TimeSeriesGraph:
+            id: graph
+            xlabel: 'Horario'
+            ylabel: 'Pressao'
+            background_color : 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: 5
+            y_ticks_major: 0.5
+            y_ticks_minor: 0.5
+            x_grid_label: True
+            y_grid_label: True
+            padding: 5
+            xgrid: True
+            ygrid: True
+            xmin: 0
+            ymin: 0
+
+        BoxLayout: 
+            orientation: 'vertical'
+            size_hint: (1,0.05)
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (0.5,1)
+                Label:
+                    size_hint: (0.3,1)
+                    text: "Numero de pontos do grafico"
+                LabelCheckBoxDataGraph:
+                    id: mp20
+                    on_kv_post:
+                        self.ids.label.text = '20'
+                        self.ids.checkbox.group = 'cb_group'
+                        active = True
+                LabelCheckBoxDataGraph:
+                    id: mp50
+                    on_kv_post:
+                        self.ids.label.text = '50'
+                        self.ids.checkbox.group = 'cb_group'
+                LabelCheckBoxDataGraph:
+                    id: mp100
+                    on_kv_post:
+                        self.ids.label.text = '100'
+                        self.ids.checkbox.group = 'cb_group'
+            Button: 
+                text: 'Fechar'
+                size_hint: (0.2,1)
+                on_release: root.dismiss()
+
+<LabelCheckBoxHistGraph>:
+    otientation: 'horizontal'
+    size_hint: (0.1,1)
+    CheckBox:
+        id:checkbox
+        on_active: app.root._graph['co_pressao'].ids.graph.setMaxPoints(int (label.text),0) if app.root is not None else None
+    Label:
+        id: label
 # <ControlePopup>:
 #     title: "Controle do sistema"
 #     size_hint_y: None
