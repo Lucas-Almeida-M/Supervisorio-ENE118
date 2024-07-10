@@ -10,6 +10,7 @@ from timeseriesgraph import TimeSeriesGraph
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from bdhandler import BDHandler
+from kivy_garden.graph import LinePlot
 
 
 class MainWidget (BoxLayout):
@@ -146,10 +147,10 @@ class MainWidget (BoxLayout):
         
 
             
-        #self._lock.acquire()
-        #self._meas['values']['co_fit02'] = random.random() * 5
-        #self._meas['values']['co_pressao'] = random.random() * 5
-        #self._lock.release()
+        self._lock.acquire()
+        self._meas['values']['co_fit02'] = random.random() * 5
+        self._meas['values']['co_pressao'] = random.random() * 5
+        self._lock.release()
        
         
     
@@ -358,8 +359,47 @@ class MainWidget (BoxLayout):
         self._updateWidgets = False
 
 
+    def getDataDB(self):
+        '''
+        Metodo que coleta as informacoes da interface e requisita a busca no BD
+        '''
+        try:
+            init_t = self.parseDTString(self._hgraph.ids.txt_init_time.text)
+            final_t = self.parseDTString(self._hgraph.ids.txt_final_time.text)
+            cols = []
+            for sensor in self._hgraph.ids.sensores.children:
+                if sensor.ids.checkbox.active:
+                    cols.append(sensor.id)
+            if init_t == None or final_t == None or len(cols) == 0:
+                self._hgraph.ids.graph.clearPlots()
+                return
+            cols.append("timestamp")
 
-# class PressureBar(BoxLayout):
-#     pressure = 0.4
-#     def set_pressure(self, value):
-#         self.pressure = value
+            dados = self._db.selectData(cols, init_t, final_t)
+
+            if dados == None or len(dados['timestamp']) == 0:
+                return
+            
+            self._hgraph.ids.graph.clearPlots()
+            for key, value in dados.items():
+                if key == 'timestamp':
+                    continue
+                p = LinePlot(line_width = 1.5, color = self._tags[key]['color'])
+                p.points = [(x, value[x]) for x in range (0, len(value))]
+                self._hgraph.ids.graph.add_plot(p)
+            self._hgraph.ids.graph.xmax = len(dados[cols[0]])
+            self._hgraph.ids.graph.update_x_labels([datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f' ) for x in dados['timestamp']])
+        except Exception as e:
+            print(f"erro = {e.args} ")
+
+
+    def parseDTString (self, datetime_str):
+        '''
+        Metodo que converte a string inserida pelo usuario para o formato utilizado na busca dos dados no BD
+        '''
+        try:
+            date = datetime.strptime(datetime_str, '%d/%m/%Y %H:%M:%S')
+            return date.strftime("%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            print(f"erro = {e.args} ")
+
