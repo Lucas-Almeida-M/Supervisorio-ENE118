@@ -1,5 +1,5 @@
 from kivy.uix.boxlayout import BoxLayout
-from popups import ModbusPopup, ScanPopup, DataGraphPopup, motorPopup
+from popups import ModbusPopup, ScanPopup, DataGraphPopup, motorPopup, HistGraphPopup
 from pyModbusTCP.client import ModbusClient
 from kivy.core.window import Window
 from threading import Thread, Lock
@@ -9,6 +9,7 @@ import random
 from timeseriesgraph import TimeSeriesGraph
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
+from bdhandler import BDHandler
 
 
 class MainWidget (BoxLayout):
@@ -64,7 +65,8 @@ class MainWidget (BoxLayout):
         self._graph[self._tags_with_graphs[1]].title = 'Fluxo'
         self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo' 
 
-
+        self._hgraph = HistGraphPopup(tags = self._tags)
+        self._db = BDHandler(kwargs.get('db_path'),self._tags)
         # for key,value in kwargs.get('modbus_CLP').items():
         #     if key == 'fornalha':
         #         plot_color = (1,0,0,1)
@@ -111,7 +113,7 @@ class MainWidget (BoxLayout):
             while self._updateWidgets:
                 self.readData()
                 self.updateGUI()
-                #inserir dados no BD
+                self._db.insertData(self._meas)
                 sleep(self._scan_time/1000) #ms
         except Exception as e:
             self._modbusClient.close()

@@ -35,6 +35,20 @@
             width: 80
             source: 'imgs/desconectado.png'
             pos_hint: {'top':1, 'right':1}
+             
+        Label:
+            text: ''
+        Button:
+            id: bt_bd
+            size_hint_x: None
+            size_hint_Y: None
+            width: 100
+            background_normal : 'imgs/dados.png'
+            background_down : 'imgs/dadosDown.png'
+            on_release:
+                root._hgraph.open()
+            
+
     
     FloatLayout:
         canvas:
