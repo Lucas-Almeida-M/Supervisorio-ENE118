@@ -31,7 +31,7 @@ class MainApp(App):
             {'tipo': '4X', 'address': 847, 'bit': None, 'tag': 'co_tensao_rs', 'div': 10, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
             {'tipo': '4X', 'address': 848, 'bit': None, 'tag': 'co_tensao_st', 'div': 10, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
             {'tipo': '4X', 'address': 849, 'bit': None, 'tag': 'co_tensao_tr', 'div': 10, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
-            {'tipo': '4X', 'address': 863, 'bit': None, 'tag': 'co_aparente_total', 'div': 1, 'hist_graph': 1, 'grandeza': 'KVA', 'limits': [0, 1000]},
+            {'tipo': '4X', 'address': 863, 'bit': None, 'tag': 'co_aparente_total', 'div': 1, 'hist_graph': 1, 'grandeza': 'KVA', 'limits': [0, 2500]},
             {'tipo': '4X', 'address': 871, 'bit': None, 'tag': 'co_fp_total', 'div': 1000, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
             {'tipo': '4X', 'address': 886, 'bit': None, 'tag': 'co_status_ats48', 'div': 1, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
             {'tipo': '4X', 'address': 888, 'bit': None, 'tag': 'co_status_atv31', 'div': 1, 'hist_graph': 0, 'grandeza': ' ', 'limits': [0, 0]},
