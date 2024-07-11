@@ -69,11 +69,13 @@ class LabelCheckBoxHistGraph(BoxLayout):
 class HistGraphPopup(Popup):
    def __init__(self, **kwargs):
        super().__init__()
-       for key,value in kwargs.get('tags').items():
-           cb = LabelCheckBoxHistGraph()
-           cb.ids.label.text = key
-           cb.ids.label.color = value['color']
-           cb.id = key
-           self.ids.sensores.add_widget(cb)
+       for key, value in kwargs.get('tags').items():
+           if value['hist_graph']:
+                cb = LabelCheckBoxHistGraph()
+                cb.ids.label.text = key
+                cb.ids.label.color = value['color']
+                cb.ids.checkbox.group = 'group'
+                cb.id = key
+                self.ids.sensores.add_widget(cb)
         
             

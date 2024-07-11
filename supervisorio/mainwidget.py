@@ -59,12 +59,12 @@ class MainWidget (BoxLayout):
         
         self._graph[self._tags_with_graphs[0]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[0]]['color'], self._max_y[0]))
         self._graph[self._tags_with_graphs[0]].title = 'Pressão'
-        self._graph[self._tags_with_graphs[0]].ids.graph.ylabel = 'Pressao' 
+        self._graph[self._tags_with_graphs[0]].ids.graph.ylabel = 'Pressao [Kgf/cm2]' 
         
 
         self._graph[self._tags_with_graphs[1]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[1]]['color'], self._max_y[1]))
         self._graph[self._tags_with_graphs[1]].title = 'Fluxo'
-        self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo' 
+        self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo [Nm3/min]' 
 
         self._hgraph = HistGraphPopup(tags = self._tags)
         self._db = BDHandler(kwargs.get('db_path'),self._tags)
@@ -147,10 +147,10 @@ class MainWidget (BoxLayout):
         
 
             
-        self._lock.acquire()
-        self._meas['values']['co_fit02'] = random.random() * 5
-        self._meas['values']['co_pressao'] = random.random() * 5
-        self._lock.release()
+        #self._lock.acquire()
+        #self._meas['values']['co_fit02'] = random.random() * 5
+        #self._meas['values']['co_pressao'] = random.random() * 5
+        #self._lock.release()
        
         
     
@@ -370,6 +370,7 @@ class MainWidget (BoxLayout):
             for sensor in self._hgraph.ids.sensores.children:
                 if sensor.ids.checkbox.active:
                     cols.append(sensor.id)
+                    key = sensor.id
             if init_t == None or final_t == None or len(cols) == 0:
                 self._hgraph.ids.graph.clearPlots()
                 return
@@ -381,14 +382,16 @@ class MainWidget (BoxLayout):
                 return
             
             self._hgraph.ids.graph.clearPlots()
-            for key, value in dados.items():
-                if key == 'timestamp':
-                    continue
-                p = LinePlot(line_width = 1.5, color = self._tags[key]['color'])
-                p.points = [(x, value[x]) for x in range (0, len(value))]
-                self._hgraph.ids.graph.add_plot(p)
+            # for key, value in dados.items():
+                # if key == 'timestamp':
+                #     continue
+            p = LinePlot(line_width = 1.5, color = self._tags[key]['color'])
+            p.points = [(x, dados[key][x]) for x in range (0, len(dados[key]))]
+            self._hgraph.ids.graph.add_plot(p)
             self._hgraph.ids.graph.xmax = len(dados[cols[0]])
             self._hgraph.ids.graph.update_x_labels([datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f' ) for x in dados['timestamp']])
+            self._hgraph.ids.graph.ylabel = self._tags[key]['grandeza']
+            self._hgraph.ids.graph.ymax = self._tags[key]['limits'][1]
         except Exception as e:
             print(f"erro = {e.args} ")
 
