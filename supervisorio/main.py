@@ -10,7 +10,7 @@ from kivy.properties import NumericProperty
 class MainApp(App):
 
     def build(self):
-       
+        # \/ Inicializacao do mainwidget com as kwargs
         self._widget = MainWidget(scan_time = 500, server_ip = '192.168.0.14', server_port = 502,db_path = "db\scada.db",
         modbus_CLP = 
         [

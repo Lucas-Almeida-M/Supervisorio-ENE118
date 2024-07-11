@@ -9,6 +9,7 @@ class BDHandler():
         """
         Construtor
         """
+        #\/ inicialização do banco de dados SQL
         self._dbpath = dbpath
         self._tablename = tablename
         self._con = sqlite3.connect(self._dbpath, check_same_thread=False)

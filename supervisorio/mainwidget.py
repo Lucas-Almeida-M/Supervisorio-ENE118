@@ -55,13 +55,14 @@ class MainWidget (BoxLayout):
             plot_color = (random.random(),random.random(),random.random(),1)
             self._tags[tag]['color'] = plot_color
         
-        self._graph = {}
-        
+        self._graph = {} # Cria dicionário dos gráficos
+
+        # Inicializa gráfico da variável Pressão        
         self._graph[self._tags_with_graphs[0]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[0]]['color'], self._max_y[0]))
         self._graph[self._tags_with_graphs[0]].title = 'Pressão'
         self._graph[self._tags_with_graphs[0]].ids.graph.ylabel = 'Pressao [Kgf/cm2]' 
         
-
+        # Inicializa gráfico da variável Fluxo 
         self._graph[self._tags_with_graphs[1]] = (DataGraphPopup(self._max_points, self._tags[self._tags_with_graphs[1]]['color'], self._max_y[1]))
         self._graph[self._tags_with_graphs[1]].title = 'Fluxo'
         self._graph[self._tags_with_graphs[1]].ids.graph.ylabel = 'Fluxo [Nm3/min]' 
@@ -84,24 +85,23 @@ class MainWidget (BoxLayout):
         inicializar uma thread para a leitura dos dados e atualização da interface
         gráfica
         """
-
         self._serverIP = ip
         self._serverPort = port
-        self._modbusClient.host = self._serverIP
-        self._modbusClient.port = self._serverPort
-        try:
-            Window.set_system_cursor("wait")
-            self._modbusClient.open()
-            Window.set_system_cursor("arrow")
-            if self._modbusClient.is_open:
-                self._updateThread = Thread(target=self.updater)
-                self._updateThread.start()
-                self.ids.img_con.source = "imgs/conectado.png"
-                self._modbusPopup.dismiss()
+        self._modbusClient.host = self._serverIP   #input do IP do server
+        self._modbusClient.port = self._serverPort #input da porta do server
+        try: #tratamento de erros
+            Window.set_system_cursor("wait")  #modifica a aparência do cursor 
+            self._modbusClient.open()         #inicia a comunicação com o server dados inputs de IP e porta
+            Window.set_system_cursor("arrow") #modifica a aparência do cursor 
+            if self._modbusClient.is_open:    #verifica se obteve sucesso na comunicação
+                self._updateThread = Thread(target=self.updater) #cria uma estrutura de multitarefa (thread)
+                self._updateThread.start()                       #Dá o start na Thread com o método updater()
+                self.ids.img_con.source = "imgs/conectado.png"   #altera uma imagem na tela principal do supervisório para indicar a conexão
+                self._modbusPopup.dismiss()   #Fecha o popup de conexão
             else:
-                self._modbusPopup.setInfo("Falha na conexão com o servidor")
+                self._modbusPopup.setInfo("Falha na conexão com o servidor")  #Exibe a mensagem em caso de falha na conexão
 
-        except Exception as e:
+        except Exception as e: #tratamento de erros
             print("Erro: ", e.args)
 
     def updater(self):
@@ -124,23 +124,26 @@ class MainWidget (BoxLayout):
         '''
         Method for reading data using the MODBUS protocol
         '''
-        self._lock.acquire()
-        self._meas['timestamp'] = datetime.now()
-        self._lock.release()
+        self._lock.acquire() #Bloqueio por semáforo, garante que o dicionário _meas não seja acessado enquanto é atualizado
+        self._meas['timestamp'] = datetime.now() #Salva o tempo atual (horário da leitura mais recente)
+        self._lock.release() #libera o semáforo
         
-        for key, value in self._tags.items():
-            self._lock.acquire()
+        for key, value in self._tags.items(): #Faz a varredura de todas as tags
+            self._lock.acquire() #bloqueio por semáforo
             try:
-                if value['bit'] is not None:
-                    self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'], 1)[0] & (1 << value['bit'])) >> value['bit'])
+                if value['bit'] is not None: #verifica se a grandeza avaliada tem a "propriedade" "bit"
+                    self._meas['values'][key] = ((self._modbusClient.read_holding_registers(value['address'], 1)[0] & (1 << value['bit'])) >> value['bit']) 
+                    # ^  Faz a leitura do registrador de acordo com o endereço ("address") da tag. Separa cada um dos bits em uma váriavel
                 else:
-                    if value['tipo'] == 'FP':
+                    if value['tipo'] == 'FP': #Verifica se a grandeza é do tipo float
                         decoder = BinaryPayloadDecoder.fromRegisters(self._modbusClient.read_holding_registers(value['address'], 2), Endian.BIG, Endian.LITTLE)
+                        # ^ Converte o valor lido para float
                         self._meas['values'][key] = round(decoder.decode_32bit_float()/value['div'],3)
+                        # ^ Faz a divisão da grandeza lida pelo divisor, casa aja
                     else:
                         self._meas['values'][key] = self._modbusClient.read_holding_registers(value['address'], 1)[0] / value['div']
-            except Exception as e:
-                # Handle exceptions appropriately
+                        # ^ Faz a leitura das grandezas inteiras e faz a divisão pelo divisor (se necessário)
+            except Exception as e:  #tratamento de erros
                 print(f"Error reading and decoding {key}: {e}")
             finally:
                 self._lock.release()
@@ -155,29 +158,39 @@ class MainWidget (BoxLayout):
         
     
     def writeData(self, tag, value):
-        self._lock.acquire()
-        if self._modbusClient.is_open:
-            if self._tags[tag]['bit'] != None:
-                val = self._modbusClient.read_holding_registers(self._tags[tag]['address'],1)[0]
-                if value:
-                    val |= val (1 << self._tags[tag]['bit'])
+
+        """
+        Método que escreve valores nos registradores do CLP
+        """
+        self._lock.acquire() #bloqueio por semáforo
+        if self._modbusClient.is_open:         #Verifica se há comunicação
+            if self._tags[tag]['bit'] != None: #Verifica se a tag corresponde a 1 bit da variável
+                #\/ Lê estado da variável
+                val = self._modbusClient.read_holding_registers(self._tags[tag]['address'],1)[0] 
+                if value: #se o valor for 1
+                    val |= val (1 << self._tags[tag]['bit']) #inverte o valor do bit
                 else:
-                    val &= ~(1 << self._tags[tag]['bit']) 
-                self._modbusClient.write_single_register(self._tags[tag]['address'], val)
-            else:
+                    val &= ~(1 << self._tags[tag]['bit'])    #inverte o valor do bit
+                #\/ Escreve no registrador o valor atualizado
+                self._modbusClient.write_single_register(self._tags[tag]['address'], val) 
+            else:# caso contrário, escreve diretamente o valor no registrador
                 self._modbusClient.write_single_register(self._tags[tag]['address'], value)
         self._lock.release()
 
         pass
 
     def toggleBitValue(self, tag):
-        self._lock.acquire()
-        if self._modbusClient.is_open:
+        """
+        Método que inverte o valor da variável 
+        """
+        self._lock.acquire()           #bloqueio por semáforo
+        if self._modbusClient.is_open: #Verifica se há comunicação
+            #\/ Lê estado da variável 
             val = self._modbusClient.read_holding_registers(self._tags[tag]['address'],1)[0]
+            #\/ inverte o valor do bit
             val ^= (1 << self._tags[tag]['bit'])
+            #\/ Escreve no registrador o valor atualizado
             self._modbusClient.write_single_register(self._tags[tag]['address'], val)
-            # print('aqui')
-            # self.ids.lbt8.background_color = (1,0,0,1)
         self._lock.release()
 
         
@@ -186,13 +199,6 @@ class MainWidget (BoxLayout):
         Metodo para atualizacao da interface grafica a partir dos dados lidos
         """
 
-        #atualizacao dos labels das temperaturas
-        # for key,value in self._tags.items():
-        #     self.ids[key].text = str(self._meas['values'][key]) + ' C'
-
-        # #Atualizar nivel do termometro 
-        # self.ids.lb_temp.size = (self.ids.lb_temp.size[0], self._meas['values']['fornalha']/450*self.ids.termometro.size[1])
-        #Atualizacao do grafico
         self._lock.acquire()
         self.updateGraphs()
         self._lock.release()
@@ -218,8 +224,9 @@ class MainWidget (BoxLayout):
 
 
     def updateGraphs(self):
-        for tag in self._tags_with_graphs:
+        for tag in self._tags_with_graphs: #Faz a varredura de todas as tags que se deseja visualizar o gráfico
             self._graph[tag].ids.graph.updateGraph((self._meas['timestamp'], self._meas['values'][tag]),0)
+            # ^ Cria um gráfico pra cada tag
 
 
     def updateVisualElements(self):
