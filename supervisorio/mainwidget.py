@@ -367,49 +367,61 @@ class MainWidget (BoxLayout):
 
 
     def getDataDB(self):
-        '''
-        Metodo que coleta as informacoes da interface e requisita a busca no BD
-        '''
+ 
         try:
+            # Obtém os tempos inicial e final a partir dos campos de texto no gráfico
             init_t = self.parseDTString(self._hgraph.ids.txt_init_time.text)
             final_t = self.parseDTString(self._hgraph.ids.txt_final_time.text)
             cols = []
+
+            # Adiciona o sensor selecionado à lista de colunas
             for sensor in self._hgraph.ids.sensores.children:
                 if sensor.ids.checkbox.active:
                     cols.append(sensor.id)
                     key = sensor.id
+
+            # Se o tempo inicial, tempo final ou colunas estiverem vazias, limpa os plots e retorna
             if init_t == None or final_t == None or len(cols) == 0:
                 self._hgraph.ids.graph.clearPlots()
                 return
+            
+            # Adiciona a coluna "timestamp" às colunas selecionadas
             cols.append("timestamp")
 
+            # Seleciona os dados do banco de dados com base nas colunas e nos tempos inicial e final
             dados = self._db.selectData(cols, init_t, final_t)
-
+            
+            # Se os dados estiverem vazios, retorna
             if dados == None or len(dados['timestamp']) == 0:
                 return
             
+            # Limpa os plots do gráfico
             self._hgraph.ids.graph.clearPlots()
-            # for key, value in dados.items():
-                # if key == 'timestamp':
-                #     continue
+            # Cria um novo plot de linha com a cor e a largura da linha especificadas
             p = LinePlot(line_width = 1.5, color = self._tags[key]['color'])
+            # Define os pontos do plot
             p.points = [(x, dados[key][x]) for x in range (0, len(dados[key]))]
+            # Adiciona o plot ao gráfico
             self._hgraph.ids.graph.add_plot(p)
+            # Define o valor máximo do eixo x
             self._hgraph.ids.graph.xmax = len(dados[cols[0]])
+            # Atualiza os rótulos do eixo x com os timestamps formatados
             self._hgraph.ids.graph.update_x_labels([datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f' ) for x in dados['timestamp']])
+            # Define o rótulo do eixo y e o valor máximo do eixo y
             self._hgraph.ids.graph.ylabel = self._tags[key]['grandeza']
             self._hgraph.ids.graph.ymax = self._tags[key]['limits'][1]
         except Exception as e:
+            # Captura e imprime qualquer exceção que ocorra
             print(f"erro = {e.args} ")
 
 
     def parseDTString (self, datetime_str):
-        '''
-        Metodo que converte a string inserida pelo usuario para o formato utilizado na busca dos dados no BD
-        '''
+
         try:
+            # Converte a string de data e hora para o formato desejado
             date = datetime.strptime(datetime_str, '%d/%m/%Y %H:%M:%S')
             return date.strftime("%Y-%m-%d %H:%M:%S")
         except Exception as e:
+            # Captura e imprime qualquer exceção que ocorra
             print(f"erro = {e.args} ")
 
